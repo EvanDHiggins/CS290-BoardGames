@@ -14,6 +14,7 @@ public abstract class Piece {
 
     protected Piece() {
         generators = new HashSet<>();
+        this.position = new Position();
     }
 
     protected Piece(Position position) {
@@ -37,7 +38,7 @@ public abstract class Piece {
      * Returns the union of moves from each IMoveGenerator
      * in generators.
      */
-    protected Set<Move> generateMoves(GameBoard board) {
+    public Set<Move> generateMoves(GameBoard board) {
         Set<Move> moves = new HashSet<>();
         for(IMoveGenerator gen : generators) {
             moves.addAll(gen.generate(board, this));

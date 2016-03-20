@@ -8,8 +8,12 @@ package boardgame;
  */
 public class Position {
 
-    protected int columnIdx;
-    protected int rowIdx;
+    protected final int columnIdx;
+    protected final int rowIdx;
+
+    public Position() {
+        this(0, 0);
+    }
 
     public Position(int rowIdx, int columnIdx) {
         this.rowIdx = rowIdx;

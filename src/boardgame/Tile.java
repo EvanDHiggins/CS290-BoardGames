@@ -1,5 +1,6 @@
 package boardgame;
 
+import java.security.cert.PKIXRevocationChecker;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,10 @@ public class Tile {
 
     public boolean hasTileColor(char c) {
         return this.emptyTileChar == c;
+    }
+
+    public void clearPiece() {
+        piece = Optional.empty();
     }
 
     @Override

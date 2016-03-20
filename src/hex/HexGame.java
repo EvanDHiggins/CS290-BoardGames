@@ -13,7 +13,7 @@ public class HexGame extends TwoPlayerGame {
     HexBoard board;
 
     public HexGame(Player player1, Player player2, int boardSize) {
-        super(player1, player2);
+        super("Hex", player1, player2);
         board = new HexBoard(player1, player2, boardSize);
     }
 

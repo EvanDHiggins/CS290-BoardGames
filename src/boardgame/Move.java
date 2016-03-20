@@ -1,5 +1,7 @@
 package boardgame;
 
+import sun.tools.tree.EqualExpression;
+
 import java.util.Optional;
 
 /**
@@ -7,12 +9,11 @@ import java.util.Optional;
  */
 public class Move {
 
-    private Position from;
-    private Position to;
+    private final Position from;
+    private final Position to;
 
-    //Some moves involve the capture of a piece. This contains the position of the
-    //captured piece if it exists.
-    private Optional<Position> capture;
+    //Some moves involve the capture of a piece.
+    private final Optional<Position> capture;
 
     public Move(Position from, Position to) {
         this.from = from;
@@ -21,8 +22,40 @@ public class Move {
     }
 
     public Move(Position from, Position to, Position capture) {
-        this(from, to);
+        this.from = from;
+        this.to = to;
         this.capture = Optional.ofNullable(capture);
+    }
+
+    /**
+     * Two moves are considered equal if their from and to
+     * positions are equal. No attention is paid to capture for
+     * the sake of equality comparison.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Move))
+            return false;
+        if(this == obj)
+            return true;
+
+        final Move that = (Move) obj;
+
+        return this.from.equals(that.from) && this.to.equals(that.to);
+    }
+
+    /**
+     * I'm a little uncertain if this is an effective way of
+     * generating a hashCode, but I think its good enough.
+     */
+    @Override
+    public int hashCode() {
+        return from.hashCode() + to.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "From: " + from + ", To: " + to;
     }
 
     public Position getFrom() {

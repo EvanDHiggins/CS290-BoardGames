@@ -9,11 +9,14 @@ import java.util.Queue;
  */
 public abstract class TwoPlayerGame {
 
+    String name;
+
     protected Player currentPlayer;
 
     protected Player otherPlayer;
 
-    protected TwoPlayerGame(Player player1, Player player2) {
+    protected TwoPlayerGame(String gameName, Player player1, Player player2) {
+        name = gameName;
         currentPlayer = player1;
         otherPlayer = player2;
     }
@@ -22,6 +25,10 @@ public abstract class TwoPlayerGame {
         Player temp = currentPlayer;
         currentPlayer = otherPlayer;
         otherPlayer = temp;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public abstract void run();
