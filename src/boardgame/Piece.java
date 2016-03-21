@@ -8,9 +8,16 @@ import java.util.Set;
  */
 public abstract class Piece {
 
+    public enum PieceColor {
+        RED,
+        BLACK,
+        WHITE
+    }
+
     protected String stringRepr;
     protected Set<IMoveGenerator> generators;
     protected Position position;
+    protected PieceColor color;
 
     protected Piece() {
         generators = new HashSet<>();
@@ -24,6 +31,18 @@ public abstract class Piece {
 
     public Position getPosition() {
         return position;
+    }
+
+    public void setPosition(Position pos) {
+        this.position = pos;
+    }
+
+    public boolean matchesColor(Piece piece) {
+        return piece.color == this.color;
+    }
+
+    public boolean matchesColor(PieceColor c) {
+        return this.color == c;
     }
 
     /**
@@ -51,14 +70,14 @@ public abstract class Piece {
         return stringRepr;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(!(obj instanceof Piece))
-            return false;
-        if(this == obj)
-            return true;
-
-        Piece that = (Piece)obj;
-        return this.toString().equals(that.toString());
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if(!(obj instanceof Piece))
+//            return false;
+//        if(this == obj)
+//            return true;
+//
+//        Piece that = (Piece)obj;
+//        return this.toString().equals(that.toString());
+//    }
 }

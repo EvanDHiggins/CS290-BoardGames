@@ -1,7 +1,5 @@
 package boardgame;
 
-import sun.tools.tree.EqualExpression;
-
 import java.util.Optional;
 
 /**
@@ -13,7 +11,7 @@ public class Move {
     private final Position to;
 
     //Some moves involve the capture of a piece.
-    private final Optional<Position> capture;
+    private Optional<Position> capture;
 
     public Move(Position from, Position to) {
         this.from = from;
@@ -25,6 +23,10 @@ public class Move {
         this.from = from;
         this.to = to;
         this.capture = Optional.ofNullable(capture);
+    }
+
+    public void setCapture(Position p) {
+        this.capture = Optional.ofNullable(p);
     }
 
     /**

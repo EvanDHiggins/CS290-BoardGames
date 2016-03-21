@@ -8,9 +8,9 @@ import boardgame.Position;
  */
 public abstract class Checker extends Piece {
 
-    protected Checker() {
-        super();
-    }
+//    protected Checker() {
+//        super();
+//    }
 
     protected Checker(Position position) {
         super(position);

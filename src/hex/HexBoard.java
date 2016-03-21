@@ -45,24 +45,24 @@ public class HexBoard extends GameBoard {
     public void printBoard() {
         System.out.print(String.format("%1$" + (boardSize +2) + "s ", " "));
         for(int i = 0; i < boardSize; ++i) {
-            System.out.print(topToBottomPlayer.getPiece().toString() + " ");
+            System.out.print(HexPiece.createPiece(topToBottomPlayer.getPieceColor()) + " ");
         }
         System.out.println();
         for(int i = boardSize - 1; i >= 0; i--) {
             int lineNumber = i + 1;
-            System.out.print(String.format("%1$" + lineNumber + "s " + leftToRightPlayer.getPiece().toString() + " ", lineNumber));
+            System.out.print(String.format("%1$" + lineNumber + "s " + HexPiece.createPiece(leftToRightPlayer.getPieceColor()) + " ", lineNumber));
 
             for(Tile tile : board[i]) {
                 System.out.print(tile.toString() + " ");
             }
 
-            System.out.print(" " + leftToRightPlayer.getPiece().toString());
+            System.out.print(" " + HexPiece.createPiece(leftToRightPlayer.getPieceColor()));
             System.out.println();
         }
 
         System.out.print("    ");
         for(int i = 0; i < boardSize; ++i) {
-            System.out.print(topToBottomPlayer.getPiece().toString() + " ");
+            System.out.print(HexPiece.createPiece(topToBottomPlayer.getPieceColor()) + " ");
         }
         System.out.println();
 
@@ -92,9 +92,9 @@ public class HexBoard extends GameBoard {
 
     public boolean doesPlayerWin(Player player) {
         if(player.equals(leftToRightPlayer)) {
-            return regionsConnected(getColumn(0), getColumn(boardSize - 1), player.getPiece());
+            return regionsConnected(getColumn(0), getColumn(boardSize - 1), player.getPieceColor());
         } else if(player.equals(topToBottomPlayer)) {
-            return regionsConnected(Arrays.asList(board[0]), Arrays.asList(board[boardSize - 1]), player.getPiece());
+            return regionsConnected(Arrays.asList(board[0]), Arrays.asList(board[boardSize - 1]), player.getPieceColor());
         } else {
             System.out.println("That player is not involved in this game.");
             return false;
@@ -117,8 +117,8 @@ public class HexBoard extends GameBoard {
      * Determines if two arbitrary lists of tiles "from", "to" are connected by
      * a path of piece "pieceType" through the recursive function pathBetween.
      */
-    private boolean regionsConnected(List<Tile> from, List<Tile> to, Piece pieceType) {
-        to.stream().filter(tile -> tile.hasPiece(pieceType))
+    private boolean regionsConnected(List<Tile> from, List<Tile> to, Piece.PieceColor pieceType) {
+        to.stream().filter(tile -> tile.getPiece().map(p -> p.matchesColor(pieceType)).orElse(false))
                    .collect(Collectors.toList());
 
         for(Tile t : from) {
@@ -128,13 +128,13 @@ public class HexBoard extends GameBoard {
         return false;
     }
 
-    private boolean pathBetween(HexPosition from, List<Tile> to, Piece pieceType, List<HexPosition> searched) {
+    private boolean pathBetween(HexPosition from, List<Tile> to, Piece.PieceColor pieceType, List<HexPosition> searched) {
         if(!withinBounds(from)) return false;
         if(searched.contains(from)) return false;
 
         Tile fromTile = getTile(from);
         if(fromTile.isBlank()) return false;
-        if(!fromTile.getPiece().get().equals(pieceType)) return false;
+        if(fromTile.getPiece().get().matchesColor(pieceType)) return false;
 
         List<HexPosition> adjacencies = from.getAdjacencies();
         if(to.contains(fromTile)) return true;

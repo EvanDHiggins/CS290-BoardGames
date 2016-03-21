@@ -24,12 +24,12 @@ public class Main {
             System.out.print("Enter your choice of game: ");
             String choice = Main.input.nextLine();
             if(choice.equals("1")) {
-                game = new HexGame(new Player("White Player", new WhiteHexPiece()),
-                                   new Player("Black Player", new BlackHexPiece()),
+                game = new HexGame(new Player("White Player", Piece.PieceColor.WHITE),
+                                   new Player("Black Player", Piece.PieceColor.BLACK),
                                    11);
             } else if(choice.equals("2")) {
-                game = new CheckersGame(new Player("Black Player", new BlackChecker()),
-                                    new Player("Red Player", new RedChecker()),
+                game = new CheckersGame(new Player("Black Player", Piece.PieceColor.BLACK),
+                                    new Player("Red Player", Piece.PieceColor.RED),
                                     8);
             }
             if(game == null)

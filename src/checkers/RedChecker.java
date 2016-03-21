@@ -7,14 +7,12 @@ import boardgame.Position;
  */
 public class RedChecker extends Checker {
 
-    public RedChecker() {
-        super();
-        stringRepr = "r";
-    }
-
     public RedChecker(Position position) {
         super(position);
         stringRepr = "r";
+        color = PieceColor.RED;
+        addGenerator(new DownStandardMoveGenerator());
+        addGenerator(new DownCaptureMoveGenerator());
     }
 
 }

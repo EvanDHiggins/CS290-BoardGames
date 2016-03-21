@@ -14,6 +14,10 @@ public class HexPosition extends Position {
         super(rowIdx, columnIdx);
     }
 
+    public HexPosition(Position p) {
+        super(p.row(), p.column());
+    }
+
     /**
      * hex adjacencies are the positions directly adjacent within a
      * row/column to a given position, and the positions adjacent along
@@ -26,7 +30,7 @@ public class HexPosition extends Position {
         for(int i = -1; i < 2; i++) {
             for(int j = -1; j < 2; j++) {
                 if(i + j != 0)
-                    result.add((HexPosition)this.plus(new HexPosition(i, j)));
+                    result.add(new HexPosition(this.plus(new HexPosition(i, j))));
             }
         }
         return result;

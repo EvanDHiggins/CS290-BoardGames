@@ -21,6 +21,10 @@ public class Tile {
 
     public void setPiece(Piece piece) {
         this.piece = Optional.ofNullable(piece);
+        this.piece.map(p -> {
+            p.setPosition(this.position);
+            return null;
+        });
     }
 
     public Optional<Piece> getPiece() {
@@ -37,6 +41,15 @@ public class Tile {
 
     public boolean hasTileColor(char c) {
         return this.emptyTileChar == c;
+    }
+
+
+    public boolean pieceMatchesColor(Piece piece) {
+        return this.piece.map(p -> p.matchesColor(piece)).orElse(false);
+    }
+
+    public boolean pieceMatchesColor(Piece.PieceColor color) {
+        return piece.map(p -> p.matchesColor(color)).orElse(false);
     }
 
     public void clearPiece() {

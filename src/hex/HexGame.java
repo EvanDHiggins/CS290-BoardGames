@@ -38,7 +38,7 @@ public class HexGame extends TwoPlayerGame {
             String input = Main.input.nextLine();
             if(input.toLowerCase().equals("exit"))
                 exitGame();
-            if(board.tryPlayPosition(input, player.getPiece()))
+            if(board.tryPlayPosition(input, HexPiece.createPiece(player.getPieceColor())))
                 return;
             System.out.println("Invalid position, try again.");
         }
@@ -51,7 +51,7 @@ public class HexGame extends TwoPlayerGame {
 
     private  void playerPrompt(Player player) {
         System.out.println("Choose a position, " + player.getName() + ".");
-        System.out.print("Your piece is " + player.getPiece().toString() + ":");
+        System.out.print("Your piece is " + HexPiece.createPiece(player.getPieceColor()) + ":");
     }
 
     private void playerWins(Player player) {
