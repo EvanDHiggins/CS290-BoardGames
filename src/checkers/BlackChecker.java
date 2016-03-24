@@ -7,16 +7,11 @@ import boardgame.Position;
  */
 public class BlackChecker extends Checker {
 
-//    public BlackChecker() {
-//        super();
-//        stringRepr = "b";
-//        color = PieceColor.BLACK;
-//    }
-
     public BlackChecker(Position position) {
         super(position);
         stringRepr = "b";
         color = PieceColor.BLACK;
         addGenerator(new UpStandardMoveGenerator());
+        addGenerator(new UpCaptureMoveGenerator());
     }
 }

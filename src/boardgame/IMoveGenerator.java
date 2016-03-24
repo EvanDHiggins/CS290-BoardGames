@@ -15,12 +15,6 @@ public interface IMoveGenerator {
     /**
      * Returns a set of available moves given a board and a piece on that
      * board.
-     *
-     * It typically makes sense to create small Move generators and combine
-     * them on a piece to define a piece's total move set. For instance, jumps
-     * and standard moves are defined in different move generators. A single
-     * piece then has multiple move generators.
-     * @return
      */
     Set<Move> generate(GameBoard board, Piece piece);
 }

@@ -1,8 +1,9 @@
 package checkers;
 
-import boardgame.*;
-
-import java.util.Optional;
+import boardgame.GameBoard;
+import boardgame.Piece;
+import boardgame.Position;
+import boardgame.Tile;
 
 /**
  * Created by Evan on 3/2/2016.
@@ -14,50 +15,55 @@ public class CheckerBoard extends GameBoard {
 
     public CheckerBoard(int size) {
         super(size);
-        board = new Tile[this.boardSize][this.boardSize];
+        board = new Tile[this.getSize()][this.getSize()];
         initBoard();
     }
 
     public void printBoard() {
         System.out.print("   ");
-        for(int i = 0; i < boardSize; i++) {
+        for(int i = 0; i < getSize(); i++) {
             System.out.print((char)('a' + i) + " ");
         }
         System.out.println();
         System.out.println();
-        for(int row = 0; row < boardSize; row++) {
-            System.out.print((boardSize - row) + "  ");
-            for(int column = 0; column < boardSize; column++) {
+        for(int row = 0; row < getSize(); row++) {
+            System.out.print((getSize() - row) + "  ");
+            for(int column = 0; column < getSize(); column++) {
                 System.out.print(board[row][column].toString() + " ");
             }
-            System.out.println("  " + (boardSize - row));
+            System.out.println("  " + (getSize() - row));
         }
         System.out.println();
         System.out.print("   ");
-        for(int i = 0; i < boardSize; i++) {
+        for(int i = 0; i < getSize(); i++) {
             System.out.print((char)('a' + i) + " ");
         }
     }
 
-    public int getSize() {
-        return boardSize;
+    /**
+     * Returns false if no piece is at pos.
+     * Returns false if piece at pos doesn't match color.
+     * Returns true if piece at pos matches color.
+     */
+    public boolean pieceAtMatches(Position pos, Piece.PieceColor color) {
+        return getPieceAt(pos).map(p -> p.matchesColor(color)).orElse(false);
     }
 
-    public void movePiece(Move move) {
+    /**
+     * Removes the piece at from and places it at to. This
+     * does not contain capture semantics or anything except
+     * for simple piece movement.
+     */
+    public void movePiece(Position from, Position to) {
+        if(!withinBounds(from))
+            throw new ArrayIndexOutOfBoundsException("From is outside of the board's bounds.");
 
-        move.getCapture().map(capture -> {
-            tileAt(capture).clearPiece();
-            return null;
-        });
+        if(!withinBounds(to))
+            throw new ArrayIndexOutOfBoundsException("To is outside of the board's bounds.");
 
-        Optional<Piece> piece = tileAt(move.getFrom()).getPiece();
-
-        System.out.println(move);
-        System.out.println("outside map");
-        piece.map(p -> {
-            System.out.println("blah");
-            clearTile(move.getFrom());
-            tileAt(move.getTo()).setPiece(p);
+        tileAt(from).getPiece().map(piece -> {
+            clearTile(from);
+            tileAt(to).setPiece(piece);
             return null;
         });
     }
@@ -66,15 +72,15 @@ public class CheckerBoard extends GameBoard {
      * This initializes a board with the starting pieces in their correct places.
      */
     private void initBoard() {
-        for(int row = 0; row < boardSize; row++) {
-            for(int column = 0; column < boardSize; column++) {
+        for(int row = 0; row < getSize(); row++) {
+            for(int column = 0; column < getSize(); column++) {
                 board[row][column] = genTile(row, column);
 
                 if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
                     board[row][column].setPiece(new RedChecker(new Position(row, column)));
                 }
 
-                if(row >= boardSize - 3 && board[row][column].hasTileColor(whiteTile)) {
+                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
                     board[row][column].setPiece(new BlackChecker(new Position(row, column)));
                 }
             }

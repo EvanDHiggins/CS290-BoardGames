@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * Created by evan on 3/21/16.
+ *
+ * Specifies all captures (jumps) moving down the board from row 8 towards row 1.
  */
 public class DownCaptureMoveGenerator implements IMoveGenerator {
 
@@ -33,9 +35,9 @@ public class DownCaptureMoveGenerator implements IMoveGenerator {
         maybeMoves.add(move1);
         maybeMoves.add(move2);
 
-        return maybeMoves.stream().filter(mv -> board.positionInBounds(mv.getTo()))
+        return maybeMoves.stream().filter(mv -> board.withinBounds(mv.getTo()))
                                   .filter(mv -> !board.pieceAt(mv.getTo()))
-                                  .filter(mv -> mv.getCapture().map(p -> board.pieceAt(p)).orElse(false))
+                                  .filter(mv -> mv.getCapture().map(board::pieceAt).orElse(false))
                                   .filter(mv -> mv.getCapture()
                                                   .map(p -> !board.tileAt(p).pieceMatchesColor(piece)).orElse(false))
                                   .collect(Collectors.toSet());

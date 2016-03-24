@@ -2,15 +2,20 @@ package checkers;
 
 import boardgame.*;
 
+import java.security.cert.PKIXRevocationChecker;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * Created by Evan on 3/2/2016.
  */
 public class CheckersGame extends TwoPlayerGame {
+
+    static final String EXIT_STRING = "exit";
 
     final String positionRegex = "[A-Ha-h][1-8]";
 
@@ -27,37 +32,82 @@ public class CheckersGame extends TwoPlayerGame {
         board.printBoard();
         while(true) {
             String moveString = Main.input.nextLine();
+            if(moveString.equalsIgnoreCase(EXIT_STRING))
+                break;
+
             if(!isValidMove(moveString)) {
                 System.out.println("Invalid move string. Try again.");
                 continue;
             }
+
             Move move = parseMove(moveString);
 
             Set<Move>moves = board.getPieceAt(move.getFrom())
                                   .map(p -> p.generateMoves(board))
                                   .orElse(new HashSet<>());
 
-            for(Move m : moves) {
-                System.out.println("Move: " + m);
-            }
-            if(moves.contains(move)) {
-                board.movePiece(move);
-            } else {
+            if(!moves.contains(move)) {
                 System.out.println("That is not a valid move.");
+                continue;
+            }
+
+            if(!board.pieceAtMatches(move.getFrom(), currentPlayer.getPieceColor())) {
+                System.out.println("That isn't your piece!");
+                continue;
+            }
+
+            moves.stream().filter(move::equals)
+                          .findFirst()
+                          .filter(mv -> board.pieceAtMatches(mv.getFrom(), currentPlayer.getPieceColor()))
+                          .map(p -> { makeMove(p); return null; });
+
+            if(playerHasWon(currentPlayer)) {
+                //handle win
+                break;
             }
 
             board.printBoard();
+            nextPlayer();
         }
     }
 
-    private boolean makeMove(Move move) {
-//        Optional<Piece> piece = board.getPieceAt(move.getFrom());
-//        if(!piece.isPresent()) {
-//            System.out.println("There is not a piece there.");
-//        }
-        board.movePiece(move);
+    /**
+     * If a player has no moves remaining, they lose. If a player
+     * has no pieces then they must have no moves remaining thus
+     * they lose.
+     * @param player
+     * @return
+     */
+    private boolean playerHasWon(Player player) {
+        Set<Piece> pieces = board.getAllPieces();
+        if(hasMovesRemaining(player.color)) {
 
-        return true;
+        }
+    }
+
+    /**
+     * Returns true if the other player has remaining moves. Used
+     * to determine win conditions.
+     */
+    private boolean otherPlayerHasMoves(Piece.PieceColor color) {
+        return board.getAllPieces().stream()
+                        .filter(piece -> !piece.matchesColor(color))
+                        .anyMatch(piece -> piece.generateMoves(board).size() > 0);
+    }
+
+    /**
+     * Executes a move by placing the piece at move.from in
+     * move.to and, if the move contains a capture, removes
+     * the captured piece.
+     */
+                                      private void makeMove(Move move) {
+        board.movePiece(move.getFrom(), move.getTo());
+
+        move.getCapture().map(capturePos -> {
+            System.out.println("Capture");
+            board.tileAt(capturePos).clearPiece();
+            return null;
+        });
     }
 
     private boolean isValidMove(String moveString) {
@@ -65,6 +115,14 @@ public class CheckersGame extends TwoPlayerGame {
         return pattern.matcher(moveString).matches();
     }
 
+    /**
+     * Converts an algebraic notation string into a move. The move
+     * does not contain a capture since captures are determined
+     * by a piece's move generator. This simply creates from and
+     * to positions.
+     * @param moveString
+     * @return
+     */
     private Move parseMove(String moveString) {
         if(!isValidMove(moveString))
             throw new IllegalArgumentException("String not a valid move string");
