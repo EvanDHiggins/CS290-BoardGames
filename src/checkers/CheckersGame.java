@@ -80,9 +80,10 @@ public class CheckersGame extends TwoPlayerGame {
      */
     private boolean playerHasWon(Player player) {
         Set<Piece> pieces = board.getAllPieces();
-        if(hasMovesRemaining(player.color)) {
-
-        }
+//        if(hasMovesRemaining(player.color)) {
+//
+//        }
+        return false;
     }
 
     /**
