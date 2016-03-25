@@ -1,28 +1,27 @@
 package checkers;
 
-import boardgame.GameBoard;
-import boardgame.Piece;
-import boardgame.Position;
-import boardgame.Tile;
+import boardgame.*;
 
 /**
  * Created by Evan on 3/2/2016.
+ *
+ * This class needs little explanation. It
  */
 public class CheckerBoard extends GameBoard {
 
     private static char blackTile = '#';
     private static char whiteTile = '_';
 
-    public CheckerBoard(int size) {
+    public CheckerBoard(int size, Player player1, Player player2) {
         super(size);
         board = new Tile[this.getSize()][this.getSize()];
-        initBoard();
+        initBoard(player1.getPieceColor(), player2.getPieceColor());
     }
 
     public void printBoard() {
         System.out.print("   ");
         for(int i = 0; i < getSize(); i++) {
-            System.out.print((char)('a' + i) + " ");
+            System.out.print((char)('A' + i) + " ");
         }
         System.out.println();
         System.out.println();
@@ -31,13 +30,14 @@ public class CheckerBoard extends GameBoard {
             for(int column = 0; column < getSize(); column++) {
                 System.out.print(board[row][column].toString() + " ");
             }
-            System.out.println("  " + (getSize() - row));
+            System.out.println(" " + (getSize() - row));
         }
         System.out.println();
         System.out.print("   ");
         for(int i = 0; i < getSize(); i++) {
-            System.out.print((char)('a' + i) + " ");
+            System.out.print((char)('A' + i) + " ");
         }
+        System.out.println();
     }
 
     /**
@@ -68,20 +68,21 @@ public class CheckerBoard extends GameBoard {
         });
     }
 
+
     /**
      * This initializes a board with the starting pieces in their correct places.
      */
-    private void initBoard() {
+    private void initBoard(Piece.PieceColor color1, Piece.PieceColor color2) {
         for(int row = 0; row < getSize(); row++) {
             for(int column = 0; column < getSize(); column++) {
                 board[row][column] = genTile(row, column);
 
-                if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
-                    board[row][column].setPiece(new RedChecker(new Position(row, column)));
+                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
+                    board[row][column].setPiece(new UpChecker(color1, new Position(row, column)));
                 }
 
-                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
-                    board[row][column].setPiece(new BlackChecker(new Position(row, column)));
+                if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
+                    board[row][column].setPiece(new DownChecker(color2, new Position(row, column)));
                 }
             }
         }

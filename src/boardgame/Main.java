@@ -1,11 +1,7 @@
 package boardgame;
 
-import checkers.BlackChecker;
 import checkers.CheckersGame;
-import checkers.RedChecker;
-import hex.BlackHexPiece;
 import hex.HexGame;
-import hex.WhiteHexPiece;
 
 import java.util.*;
 

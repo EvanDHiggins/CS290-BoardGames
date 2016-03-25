@@ -8,9 +8,14 @@ import boardgame.Position;
  */
 public abstract class Checker extends Piece {
 
+    protected boolean kinged = false;
 
-    protected Checker(Position position) {
-        super(position);
+    protected Checker(PieceColor color, Position position) {
+        super(color, position);
+    }
+
+    public boolean isKinged() {
+        return kinged;
     }
 
     public abstract void kingMe();

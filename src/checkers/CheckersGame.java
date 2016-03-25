@@ -2,7 +2,9 @@ package checkers;
 
 import boardgame.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -21,69 +23,99 @@ public class CheckersGame extends TwoPlayerGame {
     public CheckersGame(Player player1, Player player2, int boardSize) {
         super("Checkers", player1, player2);
 
-        board = new CheckerBoard(boardSize);
+        board = new CheckerBoard(boardSize, player1, player2);
     }
 
     @Override
     public void run() {
-        board.printBoard();
         while (true) {
+            String moveString;
             do {
+                board.printBoard();
                 System.out.println("Make a move " + currentPlayer.getName());
-                String moveString = Main.input.nextLine();
-                if (moveString.equalsIgnoreCase(EXIT_STRING))
-                    return;
-
-                if (!isValidMoveString(moveString)) {
-                    System.out.println("Invalid move string. Try again.");
-                    continue;
-                }
-
-                Move move = parseMove(moveString);
-
-                Set<Move> moves = board.getPieceAt(move.getFrom())
-                        .map(p -> p.generateMoves(board))
-                        .orElse(new HashSet<>());
-
-                if(hasJumpsRemaining(currentPlayer)) {
-                    moves = moves.stream().filter(Move::hasCapture).collect(Collectors.toSet());
-                }
-
-                if (!moves.contains(move)) {
-                    System.out.println("That is not a valid move.");
-                    continue;
-                }
-
-                if (!board.pieceAtMatches(move.getFrom(), currentPlayer.getPieceColor())) {
-                    System.out.println("That isn't your piece!");
-                    continue;
-                }
-
-                moves.stream().filter(move::equals)
-                        .findFirst()
-                        .filter(mv -> board.pieceAtMatches(mv.getFrom(), currentPlayer.getPieceColor()))
-                        .map(p -> {
-                            makeMove(p);
-                            return null;
-                        });
-
-                if (currentPlayerHasWon()) {
-                    System.out.println(currentPlayer.getName() + " has won!");
+                moveString = Main.input.nextLine();
+                if (moveString.equalsIgnoreCase(EXIT_STRING)) {
+                    System.out.println("Thanks for playing!");
                     return;
                 }
-            } while (hasJumpsRemaining(currentPlayer));
+            } while(!moveUntilComplete(moveString));
 
-            board.printBoard();
+            if (currentPlayerHasWon()) {
+                System.out.println(currentPlayer.getName() + " has won!");
+                return;
+            }
+
             nextPlayer();
         }
     }
 
-    private void letPlayerMove(Player player) {
+    /**
+     * Returns whether the player is done moving for
+     * the turn. A player is "done" moving when they
+     * have no remaining jump moves. A player is "not
+     * done" moving when an invalid move is entered or
+     * there are jumps remaining.
+     * @param moveString
+     * @return
+     */
+    private boolean moveUntilComplete(String moveString) {
+        boolean performedJump = false;
+        Boolean kinged = false;
 
+        if (!isValidMoveString(moveString)) {
+            System.out.println("Invalid move string. Try again.");
+            return false;
+        }
+
+        Move move = parseMove(moveString);
+
+        Set<Move> moves = board.getPieceAt(move.getFrom())
+                .map(p -> p.generateMoves(board))
+                .orElse(new HashSet<>());
+
+        if(hasJumpsRemaining(currentPlayer)) {
+            moves = moves.stream().filter(Move::hasCapture).collect(Collectors.toSet());
+            performedJump = true;
+        }
+
+        if (!moves.contains(move)) {
+            System.out.println("That is not a valid move.");
+            return false;
+        }
+
+        if (!board.pieceAtMatches(move.getFrom(), currentPlayer.getPieceColor())) {
+            System.out.println("That isn't your piece!");
+            return false;
+        }
+
+        kinged = moves.stream().filter(move::equals)
+                .findFirst()
+                .filter(mv -> board.pieceAtMatches(mv.getFrom(), currentPlayer.getPieceColor()))
+                .map(mv -> {
+                    makeMove(mv);
+                    return maybeKingPiece(mv.getTo());
+                }).orElse(false);
+        //Being kinged always ends the turn
+        if(performedJump && !kinged)
+            return !hasJumpsRemaining(currentPlayer);
+        return true;
     }
 
-    private boolean containsJump(Set<Move> moves) {
-        return moves.stream().anyMatch(Move::hasCapture);
+    /**
+     * Promotes a piece to a king and returns a value indicating
+     * whether or not the attempted promotion was successful.
+     * @param pos
+     * @return
+     */
+    public boolean maybeKingPiece(Position pos) {
+        if (pos.row() == 0 || pos.row() == board.getSize() - 1)
+            return board.getPieceAt(pos)
+                    .filter(piece -> !(((Checker) piece).isKinged()))
+                    .map(piece -> {
+                        ((Checker) piece).kingMe();
+                        return true;
+                    }).orElse(false);
+        return false;
     }
 
     public boolean hasJumpsRemaining(Player player) {
@@ -122,6 +154,9 @@ public class CheckersGame extends TwoPlayerGame {
      */
     private void makeMove(Move move) {
         board.movePiece(move.getFrom(), move.getTo());
+
+        if(move.getTo().row() == 0 || move.getTo().row() == board.getSize() - 1)
+            board.getPieceAt(move.getTo()).map(piece -> {((Checker) piece).kingMe(); return null;});
 
         move.getCapture().map(capturePos -> {
             board.tileAt(capturePos).clearPiece();

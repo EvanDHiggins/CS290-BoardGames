@@ -2,6 +2,7 @@ package boardgame;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by evan on 2/14/16.
@@ -24,9 +25,10 @@ public abstract class Piece {
         this.position = new Position();
     }
 
-    protected Piece(Position position) {
+    protected Piece(PieceColor color, Position position) {
         this();
         this.position = position;
+        this.color = color;
     }
 
     public Position getPosition() {
@@ -63,6 +65,12 @@ public abstract class Piece {
             moves.addAll(gen.generate(board, this));
         }
         return moves;
+    }
+
+    public Set<Move> generateCaptures(GameBoard board) {
+        return generateMoves(board).stream()
+                    .filter(Move::hasCapture)
+                    .collect(Collectors.toSet());
     }
 
     @Override

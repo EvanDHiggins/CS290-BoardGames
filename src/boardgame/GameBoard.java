@@ -1,8 +1,7 @@
 package boardgame;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Evan on 2/29/2016.
@@ -40,6 +39,17 @@ public abstract class GameBoard {
         if(!withinBounds(position))
             throw new ArrayIndexOutOfBoundsException("Position not on board.");
         return board[position.row()][position.column()].getPiece();
+    }
+
+    public List<Piece> getPiecesInRow(int row) {
+        if(!withinBounds(new Position(row, 0)))
+            throw new ArrayIndexOutOfBoundsException("Position not on board.");
+        return Arrays.asList(board[row]).stream()
+                        .map(Tile::getPiece)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+
     }
 
     public void clearTile(Position position) {
