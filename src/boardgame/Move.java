@@ -29,6 +29,10 @@ public class Move {
         this.capture = Optional.ofNullable(p);
     }
 
+    public void setCapture(Optional<Position> p) {
+        this.capture = p;
+    }
+
     /**
      * Two moves are considered equal if their from and to
      * positions are equal. No attention is paid to capture for
