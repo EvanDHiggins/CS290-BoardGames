@@ -15,4 +15,10 @@ public class RedChecker extends Checker {
         addGenerator(new DownCaptureMoveGenerator());
     }
 
+    @Override
+    public void kingMe() {
+        addGenerator(new UpStandardMoveGenerator());
+        addGenerator(new DownCaptureMoveGenerator());
+    }
+
 }

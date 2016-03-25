@@ -71,4 +71,8 @@ public class Move {
     public Optional<Position> getCapture() {
         return capture;
     }
+
+    public boolean hasCapture() {
+        return capture.isPresent();
+    }
 }

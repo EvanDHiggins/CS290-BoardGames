@@ -2,13 +2,10 @@ package checkers;
 
 import boardgame.*;
 
-import java.security.cert.PKIXRevocationChecker;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 /**
  * Created by Evan on 3/2/2016.
@@ -30,70 +27,92 @@ public class CheckersGame extends TwoPlayerGame {
     @Override
     public void run() {
         board.printBoard();
-        while(true) {
-            String moveString = Main.input.nextLine();
-            if(moveString.equalsIgnoreCase(EXIT_STRING))
-                break;
+        while (true) {
+            do {
+                System.out.println("Make a move " + currentPlayer.getName());
+                String moveString = Main.input.nextLine();
+                if (moveString.equalsIgnoreCase(EXIT_STRING))
+                    return;
 
-            if(!isValidMove(moveString)) {
-                System.out.println("Invalid move string. Try again.");
-                continue;
-            }
+                if (!isValidMoveString(moveString)) {
+                    System.out.println("Invalid move string. Try again.");
+                    continue;
+                }
 
-            Move move = parseMove(moveString);
+                Move move = parseMove(moveString);
 
-            Set<Move>moves = board.getPieceAt(move.getFrom())
-                                  .map(p -> p.generateMoves(board))
-                                  .orElse(new HashSet<>());
+                Set<Move> moves = board.getPieceAt(move.getFrom())
+                        .map(p -> p.generateMoves(board))
+                        .orElse(new HashSet<>());
 
-            if(!moves.contains(move)) {
-                System.out.println("That is not a valid move.");
-                continue;
-            }
+                if(hasJumpsRemaining(currentPlayer)) {
+                    moves = moves.stream().filter(Move::hasCapture).collect(Collectors.toSet());
+                }
 
-            if(!board.pieceAtMatches(move.getFrom(), currentPlayer.getPieceColor())) {
-                System.out.println("That isn't your piece!");
-                continue;
-            }
+                if (!moves.contains(move)) {
+                    System.out.println("That is not a valid move.");
+                    continue;
+                }
 
-            moves.stream().filter(move::equals)
-                          .findFirst()
-                          .filter(mv -> board.pieceAtMatches(mv.getFrom(), currentPlayer.getPieceColor()))
-                          .map(p -> { makeMove(p); return null; });
+                if (!board.pieceAtMatches(move.getFrom(), currentPlayer.getPieceColor())) {
+                    System.out.println("That isn't your piece!");
+                    continue;
+                }
 
-            if(playerHasWon(currentPlayer)) {
-                //handle win
-                break;
-            }
+                moves.stream().filter(move::equals)
+                        .findFirst()
+                        .filter(mv -> board.pieceAtMatches(mv.getFrom(), currentPlayer.getPieceColor()))
+                        .map(p -> {
+                            makeMove(p);
+                            return null;
+                        });
+
+                if (currentPlayerHasWon()) {
+                    System.out.println(currentPlayer.getName() + " has won!");
+                    return;
+                }
+            } while (hasJumpsRemaining(currentPlayer));
 
             board.printBoard();
             nextPlayer();
         }
     }
 
+    private void letPlayerMove(Player player) {
+
+    }
+
+    private boolean containsJump(Set<Move> moves) {
+        return moves.stream().anyMatch(Move::hasCapture);
+    }
+
+    public boolean hasJumpsRemaining(Player player) {
+        return board.getAllPieces().stream()
+                .filter(piece -> piece.matchesColor(player.getPieceColor()))
+                .map(piece -> piece.generateMoves(board))
+                .anyMatch(moveSet -> moveSet.stream().anyMatch(Move::hasCapture));
+    }
+
     /**
-     * If a player has no moves remaining, they lose. If a player
-     * has no pieces then they must have no moves remaining thus
-     * they lose.
-     * @param player
+     * A player wins when their opponent has no moves remaining.
+     * This definition covers both win conditions: When an opponent
+     * has no moves remaining, and when they have no pieces remaining.
+     * Since having no pieces implies they have no moves.
+     *
      * @return
      */
-    private boolean playerHasWon(Player player) {
-        Set<Piece> pieces = board.getAllPieces();
-//        if(hasMovesRemaining(player.color)) {
-//
-//        }
-        return false;
+    private boolean currentPlayerHasWon() {
+        return !playerHasMoves(otherPlayer.getPieceColor());
     }
 
     /**
      * Returns true if the other player has remaining moves. Used
      * to determine win conditions.
      */
-    private boolean otherPlayerHasMoves(Piece.PieceColor color) {
+    private boolean playerHasMoves(Piece.PieceColor color) {
         return board.getAllPieces().stream()
-                        .filter(piece -> !piece.matchesColor(color))
-                        .anyMatch(piece -> piece.generateMoves(board).size() > 0);
+                .filter(piece -> piece.matchesColor(color))
+                .anyMatch(piece -> piece.generateMoves(board).size() > 0);
     }
 
     /**
@@ -101,17 +120,16 @@ public class CheckersGame extends TwoPlayerGame {
      * move.to and, if the move contains a capture, removes
      * the captured piece.
      */
-                                      private void makeMove(Move move) {
+    private void makeMove(Move move) {
         board.movePiece(move.getFrom(), move.getTo());
 
         move.getCapture().map(capturePos -> {
-            System.out.println("Capture");
             board.tileAt(capturePos).clearPiece();
             return null;
         });
     }
 
-    private boolean isValidMove(String moveString) {
+    private boolean isValidMoveString(String moveString) {
         Pattern pattern = Pattern.compile("^" + positionRegex + "-" + positionRegex + "$");
         return pattern.matcher(moveString).matches();
     }
@@ -121,11 +139,12 @@ public class CheckersGame extends TwoPlayerGame {
      * does not contain a capture since captures are determined
      * by a piece's move generator. This simply creates from and
      * to positions.
+     *
      * @param moveString
      * @return
      */
     private Move parseMove(String moveString) {
-        if(!isValidMove(moveString))
+        if (!isValidMoveString(moveString))
             throw new IllegalArgumentException("String not a valid move string");
 
         String[] strings = moveString.split("-");
@@ -141,7 +160,7 @@ public class CheckersGame extends TwoPlayerGame {
     }
 
     private Position parsePosition(String positionString) {
-        if(!isValidPosition(positionString))
+        if (!isValidPosition(positionString))
             throw new IllegalArgumentException("String not a valid position string");
 
         positionString = positionString.toLowerCase();

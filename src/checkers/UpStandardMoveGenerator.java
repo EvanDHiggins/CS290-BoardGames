@@ -21,7 +21,7 @@ public class UpStandardMoveGenerator implements IMoveGenerator {
         maybeMoves.add(move1);
         maybeMoves.add(move2);
 
-        return maybeMoves.stream().filter(pos -> board.withinBounds(pos))
+        return maybeMoves.stream().filter(board::withinBounds)
                                   .filter(pos -> !board.pieceAt(pos))
                                   .map(pos -> new Move(piece.getPosition(), pos))
                                   .collect(Collectors.toSet());

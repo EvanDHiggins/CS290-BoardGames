@@ -37,7 +37,6 @@ public abstract class GameBoard {
     }
 
     public Optional<Piece> getPieceAt(Position position) {
-        System.out.println("Position: " + position.toString());
         if(!withinBounds(position))
             throw new ArrayIndexOutOfBoundsException("Position not on board.");
         return board[position.row()][position.column()].getPiece();

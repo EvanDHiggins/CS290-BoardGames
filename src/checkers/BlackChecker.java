@@ -14,4 +14,10 @@ public class BlackChecker extends Checker {
         addGenerator(new UpStandardMoveGenerator());
         addGenerator(new UpCaptureMoveGenerator());
     }
+
+    @Override
+    public void kingMe() {
+        addGenerator(new DownCaptureMoveGenerator());
+        addGenerator(new UpCaptureMoveGenerator());
+    }
 }
