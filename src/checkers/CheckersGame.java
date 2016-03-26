@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Evan on 3/2/2016.
+ *
  */
 public class CheckersGame extends TwoPlayerGame {
 
