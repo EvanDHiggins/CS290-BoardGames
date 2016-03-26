@@ -5,7 +5,7 @@ import boardgame.*;
 /**
  * Created by Evan on 3/2/2016.
  *
- * This class needs little explanation. It
+ * This class needs little explanation. It represents a Checker board.
  */
 public class CheckerBoard extends GameBoard {
 
@@ -38,15 +38,6 @@ public class CheckerBoard extends GameBoard {
             System.out.print((char)('A' + i) + " ");
         }
         System.out.println();
-    }
-
-    /**
-     * Returns false if no piece is at pos.
-     * Returns false if piece at pos doesn't match color.
-     * Returns true if piece at pos matches color.
-     */
-    public boolean pieceAtMatches(Position pos, Piece.PieceColor color) {
-        return getPieceAt(pos).map(p -> p.matchesColor(color)).orElse(false);
     }
 
     /**

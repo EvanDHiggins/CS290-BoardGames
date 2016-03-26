@@ -71,7 +71,6 @@ public class CheckersGame extends TwoPlayerGame {
      * Whenever a jump is made the current Player can continue
      * executing jumps as long as one exists from the same piece
      * which was originally moved. These are called chain jumps.
-     * @return
      */
     private boolean isChainJumpAvailable(Move move) {
         if(!move.hasCapture())
@@ -103,14 +102,16 @@ public class CheckersGame extends TwoPlayerGame {
      *
      * Note: this only validates a correct move input, not whether
      * the move is legal.
-     * @param player
-     * @return
      */
     private Move getMoveFromUser(Player player) {
         String moveString;
         do {
             System.out.println("Enter a move: " + player.getName());
-            moveString = Main.input.nextLine();
+            moveString = Application.input.nextLine();
+            if(EXIT_STRING.equalsIgnoreCase(moveString)) {
+                System.out.println("Thanks for playing!");
+                System.exit(0);
+            }
             if (!isValidMoveString(moveString))
                 System.out.println("Invalid input. Please enter a move in standard algebraic notation.");
         } while (!isValidMoveString(moveString));
@@ -122,8 +123,6 @@ public class CheckersGame extends TwoPlayerGame {
      * Returns all pieces for the passed player. Any of those pieces
      * can make a capture, only pieces which can make a capture are
      * returned.
-     * @param player
-     * @return
      */
     private Set<Piece> getValidPieces(Player player) {
         Set<Piece> pieces = board.getAllPieces().stream()
@@ -152,20 +151,11 @@ public class CheckersGame extends TwoPlayerGame {
         return false;
     }
 
-    public boolean hasJumpsRemaining(Player player) {
-        return board.getAllPieces().stream()
-                .filter(piece -> piece.matchesColor(player.getPieceColor()))
-                .map(piece -> piece.generateMoves(board))
-                .anyMatch(moveSet -> moveSet.stream().anyMatch(Move::hasCapture));
-    }
-
     /**
      * A player wins when their opponent has no moves remaining.
      * This definition covers both win conditions: When an opponent
      * has no moves remaining, and when they have no pieces remaining.
      * Since having no pieces implies they have no moves.
-     *
-     * @return
      */
     private boolean currentPlayerHasWon() {
         return !playerHasMoves(otherPlayer.getPieceColor());
@@ -205,9 +195,6 @@ public class CheckersGame extends TwoPlayerGame {
      * does not contain a capture since captures are determined
      * by a piece's move generator. This simply creates from and
      * to positions.
-     *
-     * @param moveString
-     * @return
      */
     private Move parseMove(String moveString) {
         if (!isValidMoveString(moveString))

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Evan on 3/2/2016.
+ *
+ * Defines the standard upward movement of the UpChecker.
  */
 public class UpStandardMoveGenerator implements IMoveGenerator {
 

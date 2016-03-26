@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * Created by evan on 3/21/16.
+ *
+ * Defines the standard movement of the DownChecker.
  */
 public class DownStandardMoveGenerator implements IMoveGenerator {
 

@@ -57,7 +57,11 @@ public abstract class Piece {
 
     /**
      * Returns the union of moves from each IMoveGenerator
-     * in generators.
+     * in generators. This is a very easily extensible movement
+     * system and allows me to compose simple move generators
+     * to create more complex movement behavior. For instance,
+     * Kings are just a combination of both Up and Down checkers
+     * movement generators.
      */
     public Set<Move> generateMoves(GameBoard board) {
         Set<Move> moves = new HashSet<>();

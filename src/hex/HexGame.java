@@ -2,10 +2,11 @@ package hex;
 
 import boardgame.TwoPlayerGame;
 import boardgame.Player;
-import boardgame.Main;
+import boardgame.Application;
 
 /**
  * Created by evan on 2/14/16.
+ *
  */
 public class HexGame extends TwoPlayerGame {
 
@@ -35,7 +36,7 @@ public class HexGame extends TwoPlayerGame {
     private void playerTurn(Player player) {
         while(true) {
             playerPrompt(player);
-            String input = Main.input.nextLine();
+            String input = Application.input.nextLine();
             if(input.toLowerCase().equals("exit"))
                 exitGame();
             if(board.tryPlayPosition(input, HexPiece.createPiece(player.getPieceColor())))

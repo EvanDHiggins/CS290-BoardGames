@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * Created by evan on 3/21/16.
+ *
+ * Defines the upward capture movement of the UpChecker
  */
 public class UpCaptureMoveGenerator implements IMoveGenerator {
 

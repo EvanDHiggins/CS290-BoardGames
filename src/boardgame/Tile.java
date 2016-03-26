@@ -1,10 +1,19 @@
 package boardgame;
 
-import java.security.cert.PKIXRevocationChecker;
 import java.util.Optional;
 
 /**
  * Created by evan on 2/12/16.
+ *
+ * I think my decision to use Optional<Piece> to represent a
+ * piece was ultimately a bad idea. Just using the null object
+ * pattern would have resulted in a lot less headaches. As it
+ * stands I have to do lots of funky map stuff for even basic
+ * operations on tiles. It just clutters up the code. I also
+ * think there's a pretty good argument for not having tiles
+ * at all and just representing a board as a 2D array of
+ * Pieces with NullPiece representing an empty space. But
+ * hindsight is 20/20.
  */
 public class Tile {
 
@@ -35,10 +44,6 @@ public class Tile {
         return position;
     }
 
-    public boolean hasPiece(Piece piece) {
-        return this.piece.equals(Optional.of(piece));
-    }
-
     public boolean hasTileColor(char c) {
         return this.emptyTileChar == c;
     }
@@ -46,10 +51,6 @@ public class Tile {
 
     public boolean pieceMatchesColor(Piece piece) {
         return this.piece.map(p -> p.matchesColor(piece)).orElse(false);
-    }
-
-    public boolean pieceMatchesColor(Piece.PieceColor color) {
-        return piece.map(p -> p.matchesColor(color)).orElse(false);
     }
 
     public void clearPiece() {

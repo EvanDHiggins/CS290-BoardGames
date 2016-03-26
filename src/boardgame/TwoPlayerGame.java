@@ -1,11 +1,8 @@
 package boardgame;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 /**
  * Created by Evan on 2/29/2016.
+ *
  */
 public abstract class TwoPlayerGame {
 
