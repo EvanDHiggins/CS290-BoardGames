@@ -64,12 +64,10 @@ public class Application {
         List<TwoPlayerGame> ret = new ArrayList<>();
 
         ret.add(new CheckersGame(new Player("Black Player", Piece.PieceColor.BLACK),
-                                 new Player("Red Player", Piece.PieceColor.RED),
-                                 8));
+                                 new Player("Red Player", Piece.PieceColor.RED)));
 
         ret.add(new HexGame(new Player("White Player", Piece.PieceColor.WHITE),
-                            new Player("Black Player", Piece.PieceColor.BLACK),
-                            11));
+                            new Player("Black Player", Piece.PieceColor.BLACK)));
 
         return ret;
     }

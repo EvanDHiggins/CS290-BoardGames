@@ -9,13 +9,10 @@ import boardgame.*;
  */
 public class CheckerBoard extends GameBoard {
 
-    private static char blackTile = '#';
-    private static char whiteTile = '_';
 
-    public CheckerBoard(int size, Player player1, Player player2) {
+    public CheckerBoard(int size) {
         super(size);
         board = new Tile[this.getSize()][this.getSize()];
-        initBoard(player1.getPieceColor(), player2.getPieceColor());
     }
 
     public void printBoard() {
@@ -63,31 +60,20 @@ public class CheckerBoard extends GameBoard {
     /**
      * This initializes a board with the starting pieces in their correct places.
      */
-    private void initBoard(Piece.PieceColor color1, Piece.PieceColor color2) {
-        for(int row = 0; row < getSize(); row++) {
-            for(int column = 0; column < getSize(); column++) {
-                board[row][column] = genTile(row, column);
+//    private void initBoard(Piece.PieceColor color1, Piece.PieceColor color2) {
+//        for(int row = 0; row < getSize(); row++) {
+//            for(int column = 0; column < getSize(); column++) {
+//                board[row][column] = genTile(row, column);
+//
+//                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
+//                    board[row][column].setPiece(new UpChecker(color1, new Position(row, column)));
+//                }
+//
+//                if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
+//                    board[row][column].setPiece(new DownChecker(color2, new Position(row, column)));
+//                }
+//            }
+//        }
+//    }
 
-                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
-                    board[row][column].setPiece(new UpChecker(color1, new Position(row, column)));
-                }
-
-                if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
-                    board[row][column].setPiece(new DownChecker(color2, new Position(row, column)));
-                }
-            }
-        }
-    }
-
-    /**
-     * It's a property of a checkerboard that the sum of the indices
-     * (0-based) of a tile are even if the tile is black and odd if
-     * the tile is white.
-     */
-    private Tile genTile(int row, int column) {
-        if((row + column) % 2 == 0) {
-            return new Tile(new Position(row, column), blackTile);
-        }
-        return new Tile(new Position(row, column), whiteTile);
-    }
 }

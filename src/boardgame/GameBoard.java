@@ -29,6 +29,10 @@ public abstract class GameBoard {
         return board[position.row()][position.column()];
     }
 
+    public void setTile(Position position, Tile tile) {
+        board[position.row()][position.column()] = tile;
+    }
+
     public boolean pieceAt(Position position) {
         if(!withinBounds(position))
             return false;

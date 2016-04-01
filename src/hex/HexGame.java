@@ -13,8 +13,9 @@ public class HexGame extends TwoPlayerGame {
     //boardgame.Player order is maintained by cycling through a queue.
     HexBoard board;
 
-    public HexGame(Player player1, Player player2, int boardSize) {
+    public HexGame(Player player1, Player player2) {
         super("Hex", player1, player2);
+        int boardSize = 11;
         board = new HexBoard(player1, player2, boardSize);
     }
 
