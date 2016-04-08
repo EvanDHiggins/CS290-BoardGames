@@ -10,9 +10,9 @@ public class ChessGame extends TwoPlayerGame {
 
     ChessBoard board;
 
-    ChessGame(Player upPlayer, Player downPlayer) {
-        super("Chess", upPlayer, downPlayer);
-
+    ChessGame(Player playerOne, Player playerTwo) {
+        super("Chess", playerOne, playerTwo);
+        //board = initBoard()
     }
 
     @Override

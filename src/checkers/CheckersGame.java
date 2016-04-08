@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
  */
 public class CheckersGame extends TwoPlayerGame {
 
-    private static char blackTile = '#';
-    private static char whiteTile = '_';
 
     static final String EXIT_STRING = "exit";
 
@@ -32,13 +30,13 @@ public class CheckersGame extends TwoPlayerGame {
         for(int row = 0; row < size; row++) {
             for(int column = 0; column < size; column++) {
                 Position this_pos = new Position(row, column);
-                new_board.setTile(this_pos, genTile(row, column));
+                //new_board.setTile(this_pos, genTile(row, column));
 
-                if(row >= size - 3 && new_board.tileAt(this_pos).hasTileColor(whiteTile)) {
+                if(row >= size - 3 && new_board.tileAt(this_pos).hasTileColor(CheckerBoard.whiteTile)) {
                     new_board.tileAt(this_pos).setPiece(new UpChecker(player1.getPieceColor(), new Position(row, column)));
                 }
 
-                if(row < 3 && new_board.tileAt(this_pos).hasTileColor(whiteTile)) {
+                if(row < 3 && new_board.tileAt(this_pos).hasTileColor(CheckerBoard.whiteTile)) {
                     new_board.tileAt(this_pos).setPiece(new DownChecker(player2.getPieceColor(), new Position(row, column)));
                 }
             }
@@ -51,12 +49,6 @@ public class CheckersGame extends TwoPlayerGame {
      * (0-based) of a tile are even if the tile is black and odd if
      * the tile is white.
      */
-    private Tile genTile(int row, int column) {
-        if((row + column) % 2 == 0) {
-            return new Tile(new Position(row, column), blackTile);
-        }
-        return new Tile(new Position(row, column), whiteTile);
-    }
 
     @Override
     public void run() {

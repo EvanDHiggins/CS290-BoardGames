@@ -9,10 +9,13 @@ import boardgame.*;
  */
 public class CheckerBoard extends GameBoard {
 
+    public static char blackTile = '#';
+    public static char whiteTile = '_';
 
     public CheckerBoard(int size) {
         super(size);
         board = new Tile[this.getSize()][this.getSize()];
+        initEmpty();
     }
 
     public void printBoard() {
@@ -54,6 +57,21 @@ public class CheckerBoard extends GameBoard {
             tileAt(to).setPiece(piece);
             return null;
         });
+    }
+
+    private void initEmpty() {
+        for(int row = 0; row < getSize(); row++) {
+            for(int column = 0; column < getSize(); column++) {
+                board[row][column] = genTile(row, column);
+            }
+        }
+    }
+
+    private Tile genTile(int row, int column) {
+        if((row + column) % 2 == 0) {
+            return new Tile(new Position(row, column), blackTile);
+        }
+        return new Tile(new Position(row, column), whiteTile);
     }
 
 
