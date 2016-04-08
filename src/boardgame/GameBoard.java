@@ -14,6 +14,7 @@ public abstract class GameBoard {
 
     protected GameBoard(int size) {
         this.boardSize = size;
+        board = new Tile[this.getSize()][this.getSize()];
     }
 
     public int getSize() {

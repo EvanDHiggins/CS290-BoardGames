@@ -1,4 +1,4 @@
-package checkers;
+package boardgame;
 
 import boardgame.*;
 
@@ -7,14 +7,13 @@ import boardgame.*;
  *
  * This class needs little explanation. It represents a Checker board.
  */
-public class CheckerBoard extends GameBoard {
+public class CheckeredBoard extends GameBoard {
 
     public static char blackTile = '#';
     public static char whiteTile = '_';
 
-    public CheckerBoard(int size) {
+    public CheckeredBoard(int size) {
         super(size);
-        board = new Tile[this.getSize()][this.getSize()];
         initEmpty();
     }
 
@@ -73,25 +72,4 @@ public class CheckerBoard extends GameBoard {
         }
         return new Tile(new Position(row, column), whiteTile);
     }
-
-
-    /**
-     * This initializes a board with the starting pieces in their correct places.
-     */
-//    private void initBoard(Piece.PieceColor color1, Piece.PieceColor color2) {
-//        for(int row = 0; row < getSize(); row++) {
-//            for(int column = 0; column < getSize(); column++) {
-//                board[row][column] = genTile(row, column);
-//
-//                if(row >= getSize() - 3 && board[row][column].hasTileColor(whiteTile)) {
-//                    board[row][column].setPiece(new UpChecker(color1, new Position(row, column)));
-//                }
-//
-//                if(row < 3 && board[row][column].hasTileColor(whiteTile)) {
-//                    board[row][column].setPiece(new DownChecker(color2, new Position(row, column)));
-//                }
-//            }
-//        }
-//    }
-
 }
