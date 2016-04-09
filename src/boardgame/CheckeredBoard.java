@@ -1,7 +1,5 @@
 package boardgame;
 
-import boardgame.*;
-
 /**
  * Created by Evan on 3/2/2016.
  *

@@ -34,6 +34,12 @@ public abstract class GameBoard {
         board[position.row()][position.column()] = tile;
     }
 
+    public void setPieceAt(Position pos, Piece piece) {
+        if(!withinBounds(pos))
+            throw new ArrayIndexOutOfBoundsException("Position not on board.");
+        tileAt(pos).setPiece(piece);
+    }
+
     public boolean pieceAt(Position position) {
         if(!withinBounds(position))
             return false;
