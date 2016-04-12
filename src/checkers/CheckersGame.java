@@ -3,7 +3,6 @@ package checkers;
 import boardgame.*;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -12,9 +11,7 @@ import java.util.stream.Collectors;
  */
 public class CheckersGame extends TwoPlayerGame {
 
-
     static final String EXIT_STRING = "exit";
-
 
     private CheckeredBoard board;
 

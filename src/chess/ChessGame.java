@@ -31,9 +31,6 @@ public class ChessGame extends TwoPlayerGame {
     //Holds previous moves. Can be unexecuted.
     private Stack<Move> oldMoveStack = new Stack<>();
 
-    //Regular expression representing a valid position in algebraic notation
-    final String positionRegex = "[A-Ha-h][1-8]";
-
     public ChessGame(Player playerOne, Player playerTwo) {
         super("Chess", playerOne, playerTwo);
         initBoard(playerOne, playerTwo);
