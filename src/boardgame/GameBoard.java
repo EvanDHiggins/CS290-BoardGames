@@ -1,6 +1,7 @@
 package boardgame;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +51,19 @@ public abstract class GameBoard {
         if(!withinBounds(position))
             throw new ArrayIndexOutOfBoundsException("Position not on board.");
         return board[position.row()][position.column()].getPiece();
+    }
+
+    /**
+     * This was a pattern I found myself using frequently so abstracted it into
+     * its own method. If a piece is found at position op.accept is applied to it.
+     */
+    public void ifPieceAt(Position position, Consumer<Piece> op) {
+        if(!withinBounds(position))
+            return;
+        getPieceAt(position).map(piece -> {
+            op.accept(piece);
+            return null;
+        });
     }
 
     public List<Piece> getPiecesInRow(int row) {

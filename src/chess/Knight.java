@@ -8,5 +8,6 @@ import boardgame.Position;
 public class Knight extends ChessPiece {
     public Knight(char repr, PieceColor color, Position position) {
         super(repr, color, position);
+        addGenerator(new KnightMoveGenerator());
     }
 }

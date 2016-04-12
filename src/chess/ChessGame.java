@@ -31,6 +31,11 @@ public class ChessGame extends TwoPlayerGame {
 
     @Override
     public void run() {
+        board.setPieceAt(new Position(3, 4), new Knight(KNIGHT, currentPlayer.getPieceColor(), new Position(3, 4)));
+        board.getPieceAt(new Position(1, 0)).map(piece -> {
+            System.out.println(piece.generateMoves(board));
+            return null;
+        });
         board.printBoard();
 //        LinearContinuousMoveGen gen = new LinearContinuousMoveGen();
 //        board.getPieceAt(new Position(3, 4)).map(piece -> {

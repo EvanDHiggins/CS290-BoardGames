@@ -14,7 +14,7 @@ import java.util.Set;
 public abstract class ContinuousMoveGenerator implements IMoveGenerator {
 
     /**
-     * Starting from piece.getPosition()+step and determine if that Position
+     * Starting from piece.getPosition()+step this determines if that Position
      * is a valid move for piece with chess capture semantics. If the space is empty
      * the move is valid. If the space has a piece then it is a valid move if the piece
      * contained is an opponent of piece.
@@ -33,7 +33,7 @@ public abstract class ContinuousMoveGenerator implements IMoveGenerator {
         Position currentPosition = piece.getPosition().plus(step);
 
         while(board.withinBounds(currentPosition)) {
-            Position lambdaPos = currentPosition;
+            Position lambdaPos = currentPosition; //Ugly solution to Java's final reference requirement in closures
             if(board.pieceAt(currentPosition)) {
                 board.getPieceAt(currentPosition).map(p -> {
                     if(!p.matchesColor(piece))

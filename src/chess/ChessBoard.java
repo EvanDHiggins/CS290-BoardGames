@@ -33,7 +33,7 @@ public class ChessBoard extends CheckeredBoard {
         System.out.println();
         System.out.println();
         for(int row = getSize()-1; row >= 0; row--) {
-            System.out.print((row + 1) + " ");
+            System.out.print((row + 1) + "  ");
             for(int column = 0; column < getSize(); column++) {
                 System.out.print(board[column][row].toString() + " ");
             }
