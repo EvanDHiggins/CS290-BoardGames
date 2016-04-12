@@ -6,29 +6,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by evan on 4/9/16.
+ * Created by Evan on 4/11/2016.
  */
-public class UpPawn extends Pawn {
-    public UpPawn(char repr, PieceColor color, Position position) {
+public class DownPawn extends Pawn {
+
+    public DownPawn(char repr, PieceColor color, Position position) {
         super(repr, color, position);
-        addGenerator(new UpPawnMoveGenerator());
+        addGenerator(new DownPawnMoveGenerator());
     }
 
     /**
      * Created by Evan on 4/11/2016.
-     *
-     * Generates moves for pawns starting from the bottom of the board (row 1) and moving
-     * towards the top of the board. En Passant captures are not included.
      */
-    public static class UpPawnMoveGenerator implements IMoveGenerator {
+    public static class DownPawnMoveGenerator implements IMoveGenerator {
         @Override
         public Set<Move> generate(GameBoard board, Piece piece) {
             Set<Move> moves = new HashSet<>();
 
-            if(!board.pieceAt(piece.getPosition().plus(new Position(0, 1)))) {
+            if(!board.pieceAt(piece.getPosition().plus(new Position(0, -1)))) {
                 if(!piece.hasMoved())
-                    moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, 2))));
-                moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, 1))));
+                    moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, -2))));
+                moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, -1))));
             }
 
             Position rightCapture = piece.getPosition().plus(new Position(1, 1));

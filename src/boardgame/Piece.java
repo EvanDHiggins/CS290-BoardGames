@@ -19,6 +19,7 @@ public abstract class Piece {
     protected Set<IMoveGenerator> generators;
     protected Position position;
     protected PieceColor color;
+    protected boolean hasMoved;
 
     protected Piece() {
         generators = new HashSet<>();
@@ -75,6 +76,14 @@ public abstract class Piece {
         return generateMoves(board).stream()
                     .filter(Move::hasCapture)
                     .collect(Collectors.toSet());
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void moved() {
+        hasMoved = true;
     }
 
     @Override

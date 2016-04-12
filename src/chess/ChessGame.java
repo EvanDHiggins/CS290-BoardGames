@@ -69,7 +69,7 @@ public class ChessGame extends TwoPlayerGame {
     private void initPlayerTwoTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
             Position pos = new Position(column, board.getSize() - 2);
-            board.setPieceAt(pos, new UpPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
+            board.setPieceAt(pos, new DownPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
         }
 
         initTeamAtRow(board.getSize() - 1, player.getPieceColor(), Character::toUpperCase);

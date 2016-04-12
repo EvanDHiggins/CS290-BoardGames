@@ -56,6 +56,8 @@ public abstract class GameBoard {
     /**
      * This was a pattern I found myself using frequently so abstracted it into
      * its own method. If a piece is found at position op.accept is applied to it.
+     * It also happens to be very convenient if an out of bounds position is ignored
+     * rather than throwing an exception.
      */
     public void ifPieceAt(Position position, Consumer<Piece> op) {
         if(!withinBounds(position))
