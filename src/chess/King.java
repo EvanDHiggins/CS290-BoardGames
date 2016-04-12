@@ -11,6 +11,7 @@ import java.util.Set;
 public class King extends ChessPiece {
     public King(char repr, PieceColor color, Position position) {
         super(repr, color, position);
+        addGenerator(new KingMoveGenerator());
     }
 
     private class KingMoveGenerator implements IMoveGenerator {
