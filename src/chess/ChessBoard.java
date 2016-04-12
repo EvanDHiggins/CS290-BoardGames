@@ -1,5 +1,7 @@
-package boardgame;
+package chess;
 
+
+import boardgame.CheckeredBoard;
 
 /**
  * Created by evan on 4/9/16.
@@ -32,8 +34,8 @@ public class ChessBoard extends CheckeredBoard {
         System.out.println();
         for(int row = getSize()-1; row >= 0; row--) {
             System.out.print((row + 1) + " ");
-            for(int col = 0; col < getSize(); col++) {
-                System.out.print(board[row][col].toString() + " ");
+            for(int column = 0; column < getSize(); column++) {
+                System.out.print(board[column][row].toString() + " ");
             }
             System.out.println(" " + (row + 1));
         }

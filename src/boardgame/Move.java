@@ -61,7 +61,7 @@ public class Move {
 
     @Override
     public String toString() {
-        return "From: " + from + ", To: " + to;
+        return "From: " + from + ", To: " + to + capture.map(c -> " Capture: " + c.toString()).orElse("");
     }
 
     public Position getFrom() {

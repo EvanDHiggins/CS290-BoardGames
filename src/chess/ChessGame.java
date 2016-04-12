@@ -2,6 +2,9 @@ package chess;
 
 import boardgame.*;
 
+import java.util.function.IntUnaryOperator;
+import java.util.function.UnaryOperator;
+
 import static java.lang.Character.toUpperCase;
 
 
@@ -28,12 +31,12 @@ public class ChessGame extends TwoPlayerGame {
 
     @Override
     public void run() {
-        //board.printBoard();
-        LinearMoveGenerator gen = new LinearMoveGenerator();
-        board.getPieceAt(new Position(0, 0)).map(piece -> {
-            gen.generate(board, piece);
-            return null;
-        });
+        board.printBoard();
+//        LinearMoveGenerator gen = new LinearMoveGenerator();
+//        board.getPieceAt(new Position(3, 4)).map(piece -> {
+//            System.out.println(gen.generate(board, piece));
+//            return null;
+//        });
     }
 
     private void initBoard(Player playerOne, Player playerTwo) {
@@ -44,23 +47,15 @@ public class ChessGame extends TwoPlayerGame {
 
     /**
      * Places player one's pieces in their starting location. Player 1 starts at the bottom of the board.
+     *
      */
     private void initPlayerOneTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
-            Position pos = new Position(1, column);
+            Position pos = new Position(column, 1);
             board.setPieceAt(pos, new UpPawn(PAWN, player.getPieceColor(), pos));
         }
-        board.setPieceAt(new Position(0, 0), new Rook(ROOK, player.getPieceColor(), new Position(0, 0)));
-        board.setPieceAt(new Position(0, 7), new Rook(ROOK, player.getPieceColor(), new Position(0, 7)));
 
-        board.setPieceAt(new Position(0, 1), new Knight(KNIGHT, player.getPieceColor(), new Position(0, 1)));
-        board.setPieceAt(new Position(0, 6), new Knight(KNIGHT, player.getPieceColor(), new Position(0, 6)));
-
-        board.setPieceAt(new Position(0, 2), new Bishop(BISHOP, player.getPieceColor(), new Position(0, 2)));
-        board.setPieceAt(new Position(0, 5), new Bishop(BISHOP, player.getPieceColor(), new Position(0, 5)));
-
-        board.setPieceAt(new Position(0, 3), new Queen(QUEEN, player.getPieceColor(), new Position(0, 3)));
-        board.setPieceAt(new Position(0, 4), new King(KING, player.getPieceColor(), new Position(0, 4)));
+        initTeamAtRow(0, player.getPieceColor(), c -> c);
     }
 
     /**
@@ -68,19 +63,31 @@ public class ChessGame extends TwoPlayerGame {
      */
     private void initPlayerTwoTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
-            Position pos = new Position(6, column);
+            Position pos = new Position(column, 6);
             board.setPieceAt(pos, new UpPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
         }
-        board.setPieceAt(new Position(7, 0), new Rook(toUpperCase(ROOK), player.getPieceColor(), new Position(7, 0)));
-        board.setPieceAt(new Position(7, 7), new Rook(toUpperCase(ROOK), player.getPieceColor(), new Position(7, 7)));
 
-        board.setPieceAt(new Position(7, 1), new Knight(toUpperCase(KNIGHT), player.getPieceColor(), new Position(7, 1)));
-        board.setPieceAt(new Position(7, 6), new Knight(toUpperCase(KNIGHT), player.getPieceColor(), new Position(7, 6)));
+        initTeamAtRow(7, player.getPieceColor(), Character::toUpperCase);
+    }
 
-        board.setPieceAt(new Position(7, 2), new Bishop(toUpperCase(BISHOP), player.getPieceColor(), new Position(7, 2)));
-        board.setPieceAt(new Position(7, 5), new Bishop(toUpperCase(BISHOP), player.getPieceColor(), new Position(7, 5)));
+    /**
+     * Initializes a team at a given row for an 8x8 chess board.
+     * @param row Row that the team is placed at.
+     * @param color Color of the team
+     * @param trans Transformation to apply to team representation. Allows one team to have capitalized pieces.
+     */
+    private void initTeamAtRow(int row, Piece.PieceColor color, UnaryOperator<Character> trans) {
 
-        board.setPieceAt(new Position(7, 3), new Queen(toUpperCase(QUEEN), player.getPieceColor(), new Position(7, 3)));
-        board.setPieceAt(new Position(7, 4), new King(toUpperCase(KING), player.getPieceColor(), new Position(7, 4)));
+        board.setPieceAt(new Position(0, row), new Rook(trans.apply(ROOK), color, new Position(0, row)));
+        board.setPieceAt(new Position(7, row), new Rook(trans.apply(ROOK), color, new Position(7, row)));
+
+        board.setPieceAt(new Position(1, row), new Knight(trans.apply(KNIGHT), color, new Position(1, row)));
+        board.setPieceAt(new Position(6, row), new Knight(trans.apply(KNIGHT), color, new Position(6, row)));
+
+        board.setPieceAt(new Position(2, row), new Bishop(trans.apply(BISHOP), color, new Position(2, row)));
+        board.setPieceAt(new Position(5, row), new Bishop(trans.apply(BISHOP), color, new Position(5, row)));
+
+        board.setPieceAt(new Position(3, row), new Queen(trans.apply(QUEEN), color, new Position(3, row)));
+        board.setPieceAt(new Position(4, row), new King(trans.apply(KING), color, new Position(4, row)));
     }
 }
