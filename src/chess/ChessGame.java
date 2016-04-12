@@ -2,8 +2,10 @@ package chess;
 
 import boardgame.*;
 
+import java.util.Stack;
 import java.util.function.IntUnaryOperator;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import static java.lang.Character.toUpperCase;
 
@@ -24,6 +26,14 @@ public class ChessGame extends TwoPlayerGame {
 
     private ChessBoard board;
 
+    private final String UNDO_MOVE_STR = "UNDO";
+
+    //Holds previous moves. Can be unexecuted.
+    private Stack<Move> oldMoveStack = new Stack<>();
+
+    //Regular expression representing a valid position in algebraic notation
+    final String positionRegex = "[A-Ha-h][1-8]";
+
     public ChessGame(Player playerOne, Player playerTwo) {
         super("Chess", playerOne, playerTwo);
         initBoard(playerOne, playerTwo);
@@ -31,17 +41,23 @@ public class ChessGame extends TwoPlayerGame {
 
     @Override
     public void run() {
-        board.setPieceAt(new Position(3, 4), new Knight(KNIGHT, currentPlayer.getPieceColor(), new Position(3, 4)));
-        board.getPieceAt(new Position(1, 0)).map(piece -> {
-            System.out.println(piece.generateMoves(board));
-            return null;
-        });
         board.printBoard();
-//        LinearContinuousMoveGen gen = new LinearContinuousMoveGen();
-//        board.getPieceAt(new Position(3, 4)).map(piece -> {
-//            System.out.println(gen.generate(board, piece));
-//            return null;
-//        });
+        while(true) {
+            String userInput = Application.input.nextLine();
+            if(UNDO_MOVE_STR.equalsIgnoreCase(userInput) && oldMoveStack.size() > 0) {
+                oldMoveStack.pop().unexecute(board);
+                nextPlayer();
+                continue;
+            }
+
+            if(!isValidMoveString(userInput)) {
+                System.out.println("Invalid Input. Try again.");
+                continue;
+            }
+
+            board.printBoard();
+        }
+
     }
 
     private void initBoard(Player playerOne, Player playerTwo) {

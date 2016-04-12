@@ -4,6 +4,7 @@ import boardgame.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by evan on 4/8/16.
@@ -25,14 +26,34 @@ public class King extends ChessPiece {
                     if(i != 0 || j != 0)
                         continue;
                     Position pos = new Position(i, j);
-                    board.ifPieceAt(pos, pce -> {
-                        if(!pce.matchesColor(piece))
-                            moves.add(new Move(piece.getPosition(), piece.getPosition().plus(pos)));
-                    });
+                    if(board.pieceAt(pos)) {
+                        board.getPieceAt(pos).map(pce -> {
+                            if(!pce.matchesColor(piece)) {
+                                Position to = piece.getPosition().plus(pos);
+                                moves.add(new Move(piece.getPosition(), to, to));
+                            }
+                            return null;
+                        });
+                    } else {
+                        moves.add(new Move(piece.getPosition(), piece.getPosition().plus(pos)));
+                    }
                 }
             }
 
-            return moves;
+            return moves.stream()
+                    .filter(mv -> board.withinBounds(mv.getTo()))
+                    .filter(mv -> !inCheckAfter(piece, mv))
+                    .collect(Collectors.toSet());
+        }
+
+        /**
+         * Returns true if piece could be captured if it were to make move.
+         * @param piece
+         * @param move
+         * @return
+         */
+        private boolean inCheckAfter(Piece piece, Move move) {
+            return false;
         }
     }
 }

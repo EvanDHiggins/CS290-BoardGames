@@ -10,8 +10,18 @@ public class Move {
     private final Position from;
     private final Position to;
 
+    //Flag indicating if the move has been executed. Unmove is a no-op if this is false.
+    boolean executed = false;
+
     //Some moves involve the capture of a piece.
     private Optional<Position> capture;
+
+    /**
+     * These are the values needed to unexecute a move.
+     */
+    private Optional<Piece> captured;
+    private Optional<Piece> originalFrom;
+    private Optional<Piece> originalTo;
 
     public Move(Position from, Position to) {
         this.from = from;
@@ -23,6 +33,48 @@ public class Move {
         this.from = from;
         this.to = to;
         this.capture = Optional.ofNullable(capture);
+    }
+
+    /**
+     * For chess I realized that it becomes very convenient if moves follow
+     * the command pattern. Being able to contain the logic of a move within a
+     * move makes it simple to add arbitrarily complex moves (important for castling)
+     * and not clutter up my main game loop with specific move logic. It also
+     * gives me the ability to incorporate and "unmove" method which makes
+     * determining check easier as well.
+     *
+     * It is assumed that to, from, and capture are all within bounds of the board.
+     * @param board the board which is being operated on.
+     * @return The Captured piece, if any.
+     */
+    public Optional<Piece> execute(GameBoard board) {
+        executed = true;
+        captured = capture.map(board::getPieceAt).orElse(Optional.empty());
+        capture.map(pos -> {board.clearTile(pos); return null;});
+        originalTo = board.getPieceAt(to);
+        originalFrom = board.getPieceAt(from);
+        board.clearTile(to);
+        board.getPieceAt(from).map(p -> {
+            board.setPieceAt(to, p);
+            board.clearTile(from);
+            return null;
+        });
+        return captured;
+    }
+
+    public void unexecute(GameBoard board) {
+        if(!executed)
+            return;
+        originalFrom.map(piece -> {
+            board.setPieceAt(from, piece);
+            return null;
+        });
+        if(originalTo.isPresent()) {
+            originalTo.ifPresent(piece -> board.setPieceAt(to, piece));
+        } else {
+            board.clearTile(to);
+        }
+        capture.ifPresent(pos -> captured.ifPresent(piece -> board.setPieceAt(pos, piece)));
     }
 
     public void setCapture(Position p) {

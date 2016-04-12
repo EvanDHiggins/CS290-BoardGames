@@ -15,9 +15,8 @@ public class CheckersGame extends TwoPlayerGame {
 
     static final String EXIT_STRING = "exit";
 
-    final String positionRegex = "[A-Ha-h][1-8]";
 
-    CheckeredBoard board;
+    private CheckeredBoard board;
 
     public CheckersGame(Player player1, Player player2) {
         super("Checkers", player1, player2);
@@ -30,7 +29,6 @@ public class CheckersGame extends TwoPlayerGame {
         for(int row = 0; row < size; row++) {
             for(int column = 0; column < size; column++) {
                 Position this_pos = new Position(row, column);
-                //new_board.setTile(this_pos, genTile(row, column));
 
                 if(row >= size - 3 && new_board.tileAt(this_pos).hasTileColor(CheckeredBoard.whiteTile)) {
                     new_board.tileAt(this_pos).setPiece(new UpChecker(player1.getPieceColor(), new Position(row, column)));
@@ -75,7 +73,8 @@ public class CheckersGame extends TwoPlayerGame {
                 continue;
             }
 
-            makeMove(move);
+            //makeMove(move);
+            move.execute(board);
 
             if(isChainJumpAvailable(move)) {
                 turnOver = false;
@@ -91,6 +90,7 @@ public class CheckersGame extends TwoPlayerGame {
 
             if(maybeMakePieceKing(move.getTo()))
                 turnOver = true;
+
         }
     }
 
@@ -203,50 +203,50 @@ public class CheckersGame extends TwoPlayerGame {
      * move.to and, if the move contains a capture, removes
      * the captured piece.
      */
-    private void makeMove(Move move) {
-        board.movePiece(move.getFrom(), move.getTo());
+//    private void makeMove(Move move) {
+//        board.movePiece(move.getFrom(), move.getTo());
+//
+//        move.getCapture().map(capturePos -> {
+//            board.tileAt(capturePos).clearPiece();
+//            return null;
+//        });
+//    }
 
-        move.getCapture().map(capturePos -> {
-            board.tileAt(capturePos).clearPiece();
-            return null;
-        });
-    }
-
-    private boolean isValidMoveString(String moveString) {
-        Pattern pattern = Pattern.compile("^" + positionRegex + "-" + positionRegex + "$");
-        return pattern.matcher(moveString).matches();
-    }
-
-    /**
-     * Converts an algebraic notation string into a move. The move
-     * does not contain a capture since captures are determined
-     * by a piece's move generator. This simply creates from and
-     * to positions.
-     */
-    private Move parseMove(String moveString) {
-        if (!isValidMoveString(moveString))
-            throw new IllegalArgumentException("String not a valid move string");
-
-        String[] strings = moveString.split("-");
-        Position from = parsePosition(strings[0]);
-        Position to = parsePosition(strings[1]);
-
-        return new Move(from, to);
-    }
-
-    private boolean isValidPosition(String positionString) {
-        Pattern pattern = Pattern.compile("^" + positionRegex + "$");
-        return pattern.matcher(positionString).matches();
-    }
-
-    private Position parsePosition(String positionString) {
-        if (!isValidPosition(positionString))
-            throw new IllegalArgumentException("String not a valid position string");
-
-        positionString = positionString.toLowerCase();
-        int row = '8' - positionString.charAt(1);
-        int column = positionString.charAt(0) - 'a';
-        return new Position(row, column);
-    }
+//    private boolean isValidMoveString(String moveString) {
+//        Pattern pattern = Pattern.compile("^" + positionRegex + "-" + positionRegex + "$");
+//        return pattern.matcher(moveString).matches();
+//    }
+//
+//    /**
+//     * Converts an algebraic notation string into a move. The move
+//     * does not contain a capture since captures are determined
+//     * by a piece's move generator. This simply creates from and
+//     * to positions.
+//     */
+//    private Move parseMove(String moveString) {
+//        if (!isValidMoveString(moveString))
+//            throw new IllegalArgumentException("String not a valid move string");
+//
+//        String[] strings = moveString.split("-");
+//        Position from = parsePosition(strings[0]);
+//        Position to = parsePosition(strings[1]);
+//
+//        return new Move(from, to);
+//    }
+//
+//    private boolean isValidPosition(String positionString) {
+//        Pattern pattern = Pattern.compile("^" + positionRegex + "$");
+//        return pattern.matcher(positionString).matches();
+//    }
+//
+//    private Position parsePosition(String positionString) {
+//        if (!isValidPosition(positionString))
+//            throw new IllegalArgumentException("String not a valid position string");
+//
+//        positionString = positionString.toLowerCase();
+//        int row = '8' - positionString.charAt(1);
+//        int column = positionString.charAt(0) - 'a';
+//        return new Position(row, column);
+//    }
 }
 
