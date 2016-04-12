@@ -8,6 +8,6 @@ import boardgame.Position;
 public class Bishop extends ChessPiece {
     public Bishop(char repr, PieceColor color, Position position) {
         super(repr, color, position);
-        addGenerator(new DiagonalMoveGenerator());
+        addGenerator(new DiagonalContinuousMoveGen());
     }
 }

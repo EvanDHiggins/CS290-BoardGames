@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by Evan on 4/11/2016.
  */
-public class DiagonalMoveGenerator extends IterativeMoveGenerator {
+public class DiagonalContinuousMoveGen extends ContinuousMoveGenerator {
     @Override
     public Set<Move> generate(GameBoard board, Piece piece) {
         Set<Move> ret = new HashSet<>();

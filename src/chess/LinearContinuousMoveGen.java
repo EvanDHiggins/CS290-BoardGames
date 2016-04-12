@@ -12,7 +12,7 @@ import java.util.Set;
  * until a piece or the end of the board is encountered (such as rooks in chess).
  * If the encountered piece is an opposing piece it is marked as a capture.
  */
-public class LinearMoveGenerator extends IterativeMoveGenerator {
+public class LinearContinuousMoveGen extends ContinuousMoveGenerator {
     @Override
     public Set<Move> generate(GameBoard board, Piece piece) {
         Set<Move> ret = new HashSet<>();

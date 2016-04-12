@@ -32,7 +32,7 @@ public class ChessGame extends TwoPlayerGame {
     @Override
     public void run() {
         board.printBoard();
-//        LinearMoveGenerator gen = new LinearMoveGenerator();
+//        LinearContinuousMoveGen gen = new LinearContinuousMoveGen();
 //        board.getPieceAt(new Position(3, 4)).map(piece -> {
 //            System.out.println(gen.generate(board, piece));
 //            return null;
@@ -63,11 +63,11 @@ public class ChessGame extends TwoPlayerGame {
      */
     private void initPlayerTwoTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
-            Position pos = new Position(column, 6);
+            Position pos = new Position(column, board.getSize() - 2);
             board.setPieceAt(pos, new UpPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
         }
 
-        initTeamAtRow(7, player.getPieceColor(), Character::toUpperCase);
+        initTeamAtRow(board.getSize() - 1, player.getPieceColor(), Character::toUpperCase);
     }
 
     /**

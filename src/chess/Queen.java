@@ -9,7 +9,7 @@ public class Queen extends ChessPiece {
 
     public Queen(char repr, PieceColor color, Position position) {
         super(repr, color, position);
-        addGenerator(new LinearMoveGenerator());
-        addGenerator(new DiagonalMoveGenerator());
+        addGenerator(new LinearContinuousMoveGen());
+        addGenerator(new DiagonalContinuousMoveGen());
     }
 }

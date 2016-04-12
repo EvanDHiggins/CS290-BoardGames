@@ -11,7 +11,7 @@ import java.util.Set;
  * This class implements a single method which is used in iterative move generators
  * such as that required of a bishop, rook, or queen.
  */
-public abstract class IterativeMoveGenerator implements IMoveGenerator {
+public abstract class ContinuousMoveGenerator implements IMoveGenerator {
 
     /**
      * Starting from piece.getPosition()+step and determine if that Position
