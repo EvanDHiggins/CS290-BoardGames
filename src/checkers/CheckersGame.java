@@ -3,6 +3,7 @@ package checkers;
 import boardgame.*;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
  *
  */
 public class CheckersGame extends TwoPlayerGame {
+
+    private final String positionRegex = "[A-Ha-h][1-8]";
 
     static final String EXIT_STRING = "exit";
 
@@ -200,50 +203,50 @@ public class CheckersGame extends TwoPlayerGame {
      * move.to and, if the move contains a capture, removes
      * the captured piece.
      */
-//    private void makeMove(Move move) {
-//        board.movePiece(move.getFrom(), move.getTo());
-//
-//        move.getCapture().map(capturePos -> {
-//            board.tileAt(capturePos).clearPiece();
-//            return null;
-//        });
-//    }
+    private void makeMove(Move move) {
+        board.movePiece(move.getFrom(), move.getTo());
 
-//    private boolean isValidMoveString(String moveString) {
-//        Pattern pattern = Pattern.compile("^" + positionRegex + "-" + positionRegex + "$");
-//        return pattern.matcher(moveString).matches();
-//    }
-//
-//    /**
-//     * Converts an algebraic notation string into a move. The move
-//     * does not contain a capture since captures are determined
-//     * by a piece's move generator. This simply creates from and
-//     * to positions.
-//     */
-//    private Move parseMove(String moveString) {
-//        if (!isValidMoveString(moveString))
-//            throw new IllegalArgumentException("String not a valid move string");
-//
-//        String[] strings = moveString.split("-");
-//        Position from = parsePosition(strings[0]);
-//        Position to = parsePosition(strings[1]);
-//
-//        return new Move(from, to);
-//    }
-//
-//    private boolean isValidPosition(String positionString) {
-//        Pattern pattern = Pattern.compile("^" + positionRegex + "$");
-//        return pattern.matcher(positionString).matches();
-//    }
-//
-//    private Position parsePosition(String positionString) {
-//        if (!isValidPosition(positionString))
-//            throw new IllegalArgumentException("String not a valid position string");
-//
-//        positionString = positionString.toLowerCase();
-//        int row = '8' - positionString.charAt(1);
-//        int column = positionString.charAt(0) - 'a';
-//        return new Position(row, column);
-//    }
+        move.getCapture().map(capturePos -> {
+            board.tileAt(capturePos).clearPiece();
+            return null;
+        });
+    }
+
+    private boolean isValidMoveString(String moveString) {
+        Pattern pattern = Pattern.compile("^" + positionRegex + "-" + positionRegex + "$");
+        return pattern.matcher(moveString).matches();
+    }
+
+    /**
+     * Converts an algebraic notation string into a move. The move
+     * does not contain a capture since captures are determined
+     * by a piece's move generator. This simply creates from and
+     * to positions.
+     */
+    private Move parseMove(String moveString) {
+        if (!isValidMoveString(moveString))
+            throw new IllegalArgumentException("String not a valid move string");
+
+        String[] strings = moveString.split("-");
+        Position from = parsePosition(strings[0]);
+        Position to = parsePosition(strings[1]);
+
+        return new Move(from, to);
+    }
+
+    private boolean isValidPosition(String positionString) {
+        Pattern pattern = Pattern.compile("^" + positionRegex + "$");
+        return pattern.matcher(positionString).matches();
+    }
+
+    private Position parsePosition(String positionString) {
+        if (!isValidPosition(positionString))
+            throw new IllegalArgumentException("String not a valid position string");
+
+        positionString = positionString.toLowerCase();
+        int row = '8' - positionString.charAt(1);
+        int column = positionString.charAt(0) - 'a';
+        return new Position(row, column);
+    }
 }
 

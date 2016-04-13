@@ -42,17 +42,29 @@ public class King extends ChessPiece {
 
             return moves.stream()
                     .filter(mv -> board.withinBounds(mv.getTo()))
-                    .filter(mv -> !inCheckAfter(piece, mv))
+                    .filter(mv -> !inCheckAfterMove(piece, mv, board))
                     .collect(Collectors.toSet());
         }
 
         /**
          * Returns true if piece could be captured if it were to make move.
-         * @param piece
+         * @param king
          * @param move
          * @return
          */
-        private boolean inCheckAfter(Piece piece, Move move) {
+        private boolean inCheckAfterMove(Piece king, Move move, GameBoard board) {
+            move.execute(board);
+            Set<Piece> opponentPieces = board.getAllPieces().stream()
+                                                                .filter(p -> !p.matchesColor(king))
+                                                                .collect(Collectors.toSet());
+            for(Piece p : opponentPieces) {
+                Set<Move> moves = p.generateMoves(board);
+                if(moves.stream().anyMatch(mv -> mv.capturesAt(king.getPosition()))) {
+                    move.unexecute(board);
+                    return true;
+                }
+            }
+            move.unexecute(board);
             return false;
         }
     }

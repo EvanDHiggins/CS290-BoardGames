@@ -86,6 +86,13 @@ public class Move {
     }
 
     /**
+     * Returns if this move has a capture at the given position
+     */
+    public boolean capturesAt(Position position) {
+        return capture.map(pos -> pos.equals(position)).orElse(false);
+    }
+
+    /**
      * Two moves are considered equal if their from and to
      * positions are equal. No attention is paid to capture for
      * the sake of equality comparison.
