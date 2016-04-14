@@ -2,9 +2,11 @@ package chess;
 
 import boardgame.*;
 
+import java.util.Set;
 import java.util.Stack;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.lang.Character.toUpperCase;
 
@@ -40,7 +42,7 @@ public class ChessGame extends TwoPlayerGame {
     @Override
     public void run() {
         board.printBoard();
-        while(true) {
+        do {
             String userInput = Application.input.nextLine();
             if(UNDO_MOVE_STR.equalsIgnoreCase(userInput) && oldMoveStack.size() > 0) {
                 oldMoveStack.pop().unexecute(board);
@@ -53,11 +55,57 @@ public class ChessGame extends TwoPlayerGame {
                 continue;
             }
 
+            Move playerMove = parseMove(userInput);
+            if(!isValidMove(playerMove)) {
+                System.out.println("That is not a valid move. Try again.");
+                continue;
+            }
+
+            playerMove.execute(board);
+            oldMoveStack.push(playerMove);
+
             System.out.println(parseMove(userInput));
 
-            //board.printBoard();
-        }
+            board.printBoard();
+            nextPlayer();
+        } while(!hasWon(currentPlayer));
 
+    }
+
+    /**
+     * Determines if the move is valid. It also is a little sneaky and, if
+     * the move is equal, sets the passed move's capture to the discovered
+     * move's capture. The reason for this is that when a user inputs a move
+     * there is no way of knowing if that move is a capture before this step
+     * without adding capture logic into the main game loop. That would
+     * completely eliminate the point of putting movement logic in the
+     * IMoveGenerator objects. So it needs to be found if the move is found.
+     * This is a very awkward place to put it, I understand.
+     * @param move
+     * @return
+     */
+    private boolean isValidMove(Move move) {
+        Set<Piece> pieces = board.getAllPieces().stream()
+                                    .filter(piece -> piece.matchesColor(currentPlayer.getPieceColor()))
+                                    .collect(Collectors.toSet());
+
+        System.out.println(move);
+        System.out.println();
+        for(Piece piece : pieces) {
+            for(Move mv : piece.generateMoves(board)) {
+                System.out.println(mv);
+                if(mv.equals(move)) {
+                    mv.getCapture().ifPresent(move::setCapture);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasWon(Player player) {
+
+        return false;
     }
 
     private void initBoard(Player playerOne, Player playerTwo) {
@@ -146,6 +194,6 @@ public class ChessGame extends TwoPlayerGame {
         positionString = positionString.toLowerCase();
         int row = positionString.charAt(1) - '1';
         int column = positionString.charAt(0) - 'a';
-        return new Position(row, column);
+        return new Position(column, row);
     }
 }

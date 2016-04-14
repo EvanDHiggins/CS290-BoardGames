@@ -56,6 +56,7 @@ public class Move {
         board.clearTile(to);
         board.getPieceAt(from).map(p -> {
             board.setPieceAt(to, p);
+            p.moved();
             board.clearTile(from);
             return null;
         });
@@ -67,6 +68,7 @@ public class Move {
             return;
         originalFrom.map(piece -> {
             board.setPieceAt(from, piece);
+            piece.unmove();
             return null;
         });
         if(originalTo.isPresent()) {
@@ -75,6 +77,7 @@ public class Move {
             board.clearTile(to);
         }
         capture.ifPresent(pos -> captured.ifPresent(piece -> board.setPieceAt(pos, piece)));
+        executed = false;
     }
 
     public void setCapture(Position p) {
@@ -95,7 +98,10 @@ public class Move {
     /**
      * Two moves are considered equal if their from and to
      * positions are equal. No attention is paid to capture for
-     * the sake of equality comparison.
+     * the sake of equality comparison. This definiton should extend
+     * to any subclasses of a move. If moves share a from and to location
+     * but differ in their execute semantics this method should not be
+     * used.
      */
     @Override
     public boolean equals(Object obj) {

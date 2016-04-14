@@ -86,6 +86,10 @@ public abstract class Piece {
         hasMoved = true;
     }
 
+    public void unmove() {
+        hasMoved = false;
+    }
+
     @Override
     public String toString() {
         return stringRepr;
