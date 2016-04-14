@@ -2,7 +2,6 @@ package chess;
 
 import boardgame.*;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -10,11 +9,22 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.lang.Character.codePointAt;
 import static java.lang.Character.toUpperCase;
 
 
 /**
  * Created by evan on 4/1/16.
+ *
+ * Note on vocabulary:
+ *
+ * In this project a "valid" move is one which fits the move
+ * semantics of a specific piece. Any move contained in the return
+ * value of a Piece::generateMoves is a "valid" move.
+ *
+ * A "legal" move is a subset of all valid moves. A legal move cannot
+ * put the king into check. And if the king is in check, a legal move
+ * must move the king out of check.
  */
 public class ChessGame extends TwoPlayerGame {
 
@@ -49,7 +59,12 @@ public class ChessGame extends TwoPlayerGame {
         do {
             board.printBoard();
             System.out.println("Make a move " + currentPlayer.getName());
+
+            if(inCheck(currentPlayer))
+                System.out.println("You are in check.");
+
             String userInput = Application.input.nextLine();
+
             if(UNDO_MOVE_STR.equalsIgnoreCase(userInput) && oldMoveStack.size() > 0) {
                 oldMoveStack.pop().unexecute(board);
                 nextPlayer();
@@ -57,32 +72,118 @@ public class ChessGame extends TwoPlayerGame {
             }
 
             if(!isValidMoveString(userInput)) {
-                System.out.println("Invalid Input. Try again.");
+                System.out.println("That is not a valid input.");
+                System.out.println("Please input a move in algebraic notation.");
                 continue;
             }
 
             Move playerMove = parseMove(userInput);
+
             if(!isValidMove(playerMove)) {
-                System.out.println("That is not a valid move. Try again.");
+                System.out.println("That is not a valid move.");
                 continue;
             }
 
-            if(inCheck(currentPlayer)) {
-                playerMove.execute(board);
-                if(inCheck(currentPlayer)) {
-                    playerMove.unexecute(board);
-                    System.out.println("You cannot make that move, your king is in check.");
-                    continue;
-                }
-            } else {
-                playerMove.execute(board);
+            if(!isLegalMove(playerMove)) {
+                System.out.println("That is not a legal move. It would leave you in check.");
+                continue;
             }
 
+            playerMove.execute(board);
             oldMoveStack.push(playerMove);
+
+
+            if(isStalemate(otherPlayer))
+                stalemate();
 
             nextPlayer();
         } while(!hasLost(currentPlayer));
-        System.out.println("Thanks for playing!");
+
+        playerWins(otherPlayer);
+
+//        do {
+//            board.printBoard();
+//            System.out.println("Make a move " + currentPlayer.getName());
+//
+//            if(inCheck(currentPlayer))
+//                System.out.println("You are in Check.");
+//
+//            String userInput = Application.input.nextLine();
+//            if(UNDO_MOVE_STR.equalsIgnoreCase(userInput) && oldMoveStack.size() > 0) {
+//                oldMoveStack.pop().unexecute(board);
+//                nextPlayer();
+//                continue;
+//            }
+//
+//            if(!isValidMoveString(userInput)) {
+//                System.out.println("Invalid Input. Try again.");
+//                continue;
+//            }
+//
+//            Move playerMove = parseMove(userInput);
+//            if(!isValidMove(playerMove)) {
+//                System.out.println("That is not a valid move. Try again.");
+//                continue;
+//            }
+//
+//            if(inCheck(currentPlayer)) {
+//                playerMove.execute(board);
+//                if(inCheck(currentPlayer)) {
+//                    playerMove.unexecute(board);
+//                    System.out.println("You cannot make that move, your king is in check.");
+//                    continue;
+//                }
+//            } else {
+//                playerMove.execute(board);
+//            }
+//
+//            oldMoveStack.push(playerMove);
+//
+//            nextPlayer();
+//
+//            if(isStalemate(currentPlayer))
+//                stalemate();
+//        } while(!hasLost(currentPlayer));
+    }
+
+    private void playerWins(Player player) {
+        System.out.println("Checkmate. " + player.getName() + " has won!");
+    }
+
+    /**
+     * A stalemate arrises when a player is NOT in check, but has
+     * no legal moves.
+     * @param player
+     * @return
+     */
+    private boolean isStalemate(Player player) {
+        return !inCheck(player) && !hasLegalMoves(player);
+    }
+
+    /**
+     * Determines if a valid move (one that meets a single pieces move/capture
+     * semantics) is a legal move.
+     */
+    private boolean hasLegalMoves(Player player) {
+        King king = findPlayersKing(player);
+        Set<Piece> pieces = getPlayerPieces(player);
+        for(Piece piece : pieces) {
+            for(Move mv : piece.generateMoves(board)) {
+                mv.execute(board);
+                if(!inCheck(king)) {
+                    mv.unexecute(board);
+                    return true;
+                }
+                mv.unexecute(board);
+            }
+        }
+        return false;
+    }
+
+    private void stalemate() {
+        System.out.println(currentPlayer.getName() + "has no moves remaining.");
+        System.out.println("The game is a stalemate.");
+        System.exit(0);
     }
 
     /**
@@ -95,6 +196,13 @@ public class ChessGame extends TwoPlayerGame {
                                 .filter(piece -> ((ChessPiece)piece).isKing())
                                 .filter(player::owns)
                                 .findFirst().get();
+    }
+
+    private boolean isLegalMove(Move move) {
+        move.execute(board);
+        boolean isLegal = !inCheck(currentPlayer);
+        move.unexecute(board);
+        return isLegal;
     }
 
     /**
@@ -131,25 +239,7 @@ public class ChessGame extends TwoPlayerGame {
      * move still results in their king being in check.
      */
     private boolean hasLost(Player player) {
-        King king = findPlayersKing(player);
-        if(!inCheck(king))
-            return false;
-
-        Set<Piece> pieces = getPlayerPieces(player);
-        for(Piece piece : pieces)
-            System.out.println(piece);
-        for(Piece piece : pieces) {
-            for(Move mv : piece.generateMoves(board)) {
-                mv.execute(board);
-                if(!inCheck(king)) {
-                    mv.unexecute(board);
-                    System.out.println(mv + " gets " + player.getName() + " out of check");
-                    return false;
-                }
-                mv.unexecute(board);
-            }
-        }
-        return true;
+        return inCheck(findPlayersKing(player)) && !hasLegalMoves(player);
     }
 
     private Set<Piece> getPlayerPieces(Player player) {
