@@ -37,7 +37,7 @@ public class UpPawn extends Pawn {
                     moves.add(new Move(piece.getPosition(), rightCapture, rightCapture));
             });
 
-            Position leftCapture = piece.getPosition().plus(new Position(-1, -1));
+            Position leftCapture = piece.getPosition().plus(new Position(-1, 1));
             board.ifPieceAt(leftCapture, pce -> {
                 if(!pce.matchesColor(piece))
                     moves.add(new Move(piece.getPosition(), leftCapture, leftCapture));

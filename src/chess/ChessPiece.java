@@ -12,4 +12,8 @@ public abstract class ChessPiece extends Piece {
         super(color, position);
         this.stringRepr = Character.toString(repr);
     }
+
+    public boolean isKing() {
+        return false;
+    }
 }

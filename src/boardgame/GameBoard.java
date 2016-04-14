@@ -62,10 +62,7 @@ public abstract class GameBoard {
     public void ifPieceAt(Position position, Consumer<Piece> op) {
         if(!withinBounds(position))
             return;
-        getPieceAt(position).map(piece -> {
-            op.accept(piece);
-            return null;
-        });
+        getPieceAt(position).ifPresent(op::accept);
     }
 
     public List<Piece> getPiecesInRow(int row) {
@@ -87,12 +84,7 @@ public abstract class GameBoard {
         Set<Piece> pieces = new HashSet<>();
         for(int i = 0; i < boardSize; i++) {
             for(int j = 0; j < boardSize; j++) {
-                Optional<Piece> piece = getPieceAt(new Position(i, j));
-
-                piece.map(p -> {
-                    pieces.add(p);
-                    return null;
-                });
+                board[i][j].getPiece().ifPresent(pieces::add);
             }
         }
         return pieces;

@@ -2,6 +2,8 @@ package chess;
 
 import boardgame.*;
 
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.UnaryOperator;
@@ -41,8 +43,12 @@ public class ChessGame extends TwoPlayerGame {
 
     @Override
     public void run() {
-        board.printBoard();
+
+        //At the beginning of this loop currentPlayer is guaranteed to have
+        //at least one legal move.
         do {
+            board.printBoard();
+            System.out.println("Make a move " + currentPlayer.getName());
             String userInput = Application.input.nextLine();
             if(UNDO_MOVE_STR.equalsIgnoreCase(userInput) && oldMoveStack.size() > 0) {
                 oldMoveStack.pop().unexecute(board);
@@ -61,15 +67,34 @@ public class ChessGame extends TwoPlayerGame {
                 continue;
             }
 
-            playerMove.execute(board);
+            if(inCheck(currentPlayer)) {
+                playerMove.execute(board);
+                if(inCheck(currentPlayer)) {
+                    playerMove.unexecute(board);
+                    System.out.println("You cannot make that move, your king is in check.");
+                    continue;
+                }
+            } else {
+                playerMove.execute(board);
+            }
+
             oldMoveStack.push(playerMove);
 
-            System.out.println(parseMove(userInput));
-
-            board.printBoard();
             nextPlayer();
-        } while(!hasWon(currentPlayer));
+        } while(!hasLost(currentPlayer));
+        System.out.println("Thanks for playing!");
+    }
 
+    /**
+     * Small note: This function performs an unchecked Optional::get call. It
+     * is safe to do so because kings should never be removed from the board.
+     * If they have been the game has been placed in a failed state anyway.
+     */
+    private King findPlayersKing(Player player) {
+        return (King)board.getAllPieces().stream()
+                                .filter(piece -> ((ChessPiece)piece).isKing())
+                                .filter(player::owns)
+                                .findFirst().get();
     }
 
     /**
@@ -81,32 +106,76 @@ public class ChessGame extends TwoPlayerGame {
      * completely eliminate the point of putting movement logic in the
      * IMoveGenerator objects. So it needs to be found if the move is found.
      * This is a very awkward place to put it, I understand.
-     * @param move
-     * @return
+     *
+     * This also does not determine if a move is LEGAL based on Chess checkmate
+     * rules.
      */
     private boolean isValidMove(Move move) {
-        Set<Piece> pieces = board.getAllPieces().stream()
-                                    .filter(piece -> piece.matchesColor(currentPlayer.getPieceColor()))
-                                    .collect(Collectors.toSet());
-
-        System.out.println(move);
-        System.out.println();
-        for(Piece piece : pieces) {
+        Optional<Piece> maybePiece = board.getPieceAt(move.getFrom());
+        if(!maybePiece.map(currentPlayer::owns).orElse(false)) {
+            return false;
+        }
+        return maybePiece.map(piece -> {
             for(Move mv : piece.generateMoves(board)) {
-                System.out.println(mv);
                 if(mv.equals(move)) {
                     mv.getCapture().ifPresent(move::setCapture);
                     return true;
                 }
             }
+            return false;
+        }).orElse(false);
+    }
+
+    /**
+     * A player has lost the game when their king is in check and any available
+     * move still results in their king being in check.
+     */
+    private boolean hasLost(Player player) {
+        King king = findPlayersKing(player);
+        if(!inCheck(king))
+            return false;
+
+        Set<Piece> pieces = getPlayerPieces(player);
+        for(Piece piece : pieces)
+            System.out.println(piece);
+        for(Piece piece : pieces) {
+            for(Move mv : piece.generateMoves(board)) {
+                mv.execute(board);
+                if(!inCheck(king)) {
+                    mv.unexecute(board);
+                    System.out.println(mv + " gets " + player.getName() + " out of check");
+                    return false;
+                }
+                mv.unexecute(board);
+            }
+        }
+        return true;
+    }
+
+    private Set<Piece> getPlayerPieces(Player player) {
+        return board.getAllPieces().stream()
+                                   .filter(player::owns)
+                                   .collect(Collectors.toSet());
+    }
+
+    private boolean inCheck(Player player) {
+        return inCheck(findPlayersKing(player));
+    }
+
+    private boolean inCheck(King king) {
+        Set<Piece> opponentPieces = board.getAllPieces().stream()
+                                            .filter(piece -> !piece.matchesColor(king))
+                                            .collect(Collectors.toSet());
+
+        for(Piece piece : opponentPieces) {
+            for(Move mv : piece.generateCaptures(board)) {
+                if(mv.getCapture().map(pos -> pos.equals(king.getPosition())).orElse(false))
+                    return true;
+            }
         }
         return false;
     }
 
-    private boolean hasWon(Player player) {
-
-        return false;
-    }
 
     private void initBoard(Player playerOne, Player playerTwo) {
         board = new ChessBoard(CHESS_BOARD_SIZE);

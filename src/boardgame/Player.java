@@ -20,6 +20,10 @@ public class Player {
     public Piece.PieceColor getPieceColor() {
         return pieceColor;
     }
+
+    public boolean owns(Piece piece) {
+        return piece.matchesColor(this.getPieceColor());
+    }
 //
 //    @Override
 //    public boolean equals(Object obj) {
