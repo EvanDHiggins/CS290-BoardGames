@@ -57,6 +57,7 @@ public class ChessGame extends TwoPlayerGame {
         //at least one legal move.
         do {
             board.printBoard();
+            System.out.println(board.getPieceAt(new Position(0, 4)).map(piece -> piece.generateMoves(board)));
             System.out.println("Make a move " + currentPlayer.getName());
 
             if(inCheck(currentPlayer))
@@ -95,7 +96,8 @@ public class ChessGame extends TwoPlayerGame {
             if(isStalemate(otherPlayer))
                 stalemate();
 
-            nextPlayer();
+
+            //nextPlayer();
         } while(!hasLost(currentPlayer));
 
         playerWins(otherPlayer);

@@ -54,4 +54,11 @@ public class DualMove extends Move {
     public boolean withinBounds(GameBoard board) {
         return firstMove.withinBounds(board) && secondMove.withinBounds(board);
     }
+
+    @Override
+    public String toString() {
+        return "Dual Move:" + '\n'
+             + "     firstMove: " + firstMove.toString() + '\n'
+             + "    secondMove: " + secondMove.toString() + '\n';
+    }
 }
