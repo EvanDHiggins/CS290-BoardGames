@@ -2,6 +2,7 @@ package chess;
 
 import boardgame.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -52,7 +53,6 @@ public class ChessGame extends TwoPlayerGame {
 
     @Override
     public void run() {
-
         //At the beginning of this loop currentPlayer is guaranteed to have
         //at least one legal move.
         do {
@@ -93,6 +93,7 @@ public class ChessGame extends TwoPlayerGame {
             playerMove.execute(board);
             oldMoveStack.push(playerMove);
 
+            promotions(board);
 
             if(isStalemate(otherPlayer))
                 stalemate();
@@ -103,6 +104,39 @@ public class ChessGame extends TwoPlayerGame {
 
         playerWins(otherPlayer);
     }
+
+    private void promotions(GameBoard board) {
+        for(int column = 0; column < board.getSize(); column++) {
+            Position pos1 = new Position(column, 0);
+            Position pos2 = new Position(column, board.getSize() - 1);
+            if(isPawn(board, pos1)) {
+                board.getPieceAt(pos1).ifPresent(piece -> {
+                    promote(board, piece);
+                });
+            }
+            if(isPawn(board, pos2)) {
+                board.getPieceAt(pos2).ifPresent(piece -> {
+                    promote(board, piece);
+                });
+            }
+        }
+    }
+
+    private void promote(GameBoard board, Piece piece) {
+        System.out.println("Choose your promotion:");
+        System.out.println("1: Bishop");
+        System.out.println("2: Knight");
+        System.out.println("3: Queen");
+        System.out.println("4: Rook");
+    }
+
+    /**
+     * Returns true if piece at the position on board is a pawn. False otherwise.
+     */
+    private boolean isPawn(GameBoard board, Position pos) {
+        return board.getPieceAt(pos).map(p -> p instanceof Pawn).orElse(false);
+    }
+
 
     private void playerWins(Player player) {
         System.out.println("Checkmate. " + player.getName() + " has won!");
@@ -225,7 +259,6 @@ public class ChessGame extends TwoPlayerGame {
         return false;
     }
 
-
     private void initBoard(Player playerOne, Player playerTwo) {
         board = new ChessBoard(CHESS_BOARD_SIZE);
         initPlayerOneTeam(playerOne);
@@ -233,27 +266,26 @@ public class ChessGame extends TwoPlayerGame {
     }
 
     /**
-     * Places player one's pieces in their starting location. Player 1 starts at the bottom of the board.
-     *
+     * Places player one's pieces in their starting location.
+     * Player 1 starts at the bottom of the board.
      */
     private void initPlayerOneTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
             Position pos = new Position(column, 1);
             board.setPieceAt(pos, new UpPawn(PAWN, player.getPieceColor(), pos));
         }
-
         initTeamAtRow(0, player.getPieceColor(), c -> c);
     }
 
     /**
-     * Places player two's pieces in their starting location. Player 2 starts at the top of the board.
+     * Places player two's pieces in their starting location.
+     * Player 2 starts at the top of the board.
      */
     private void initPlayerTwoTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
             Position pos = new Position(column, board.getSize() - 2);
             board.setPieceAt(pos, new DownPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
         }
-
         initTeamAtRow(board.getSize() - 1, player.getPieceColor(), Character::toUpperCase);
     }
 

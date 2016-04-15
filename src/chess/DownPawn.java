@@ -29,7 +29,7 @@ public class DownPawn extends Pawn {
                 moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, -1))));
             }
 
-            Position rightCapture = piece.getPosition().plus(new Position(1, 1));
+            Position rightCapture = piece.getPosition().plus(new Position(1, -1));
             board.ifPieceAt(rightCapture, pce -> {
                 if(!pce.matchesColor(piece))
                     moves.add(new Move(piece.getPosition(), rightCapture, rightCapture));
