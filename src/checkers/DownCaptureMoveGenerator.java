@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Created by evan on 3/21/16.
  *
- * Specifies all captures (jumps) moving down the board from row 8 towards row 1.
+ * Specifies all captures (jumps) moving down the board from getY 8 towards getY 1.
  */
 public class DownCaptureMoveGenerator implements IMoveGenerator {
 

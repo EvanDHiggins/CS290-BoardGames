@@ -102,7 +102,7 @@ public class HexBoard extends GameBoard {
     }
 
     public Tile getTile(HexPosition bp) {
-        return board[bp.row()][bp.column()];
+        return board[bp.getY()][bp.getX()];
     }
 
     private List<Tile> getColumn(int colNum) {
@@ -153,7 +153,7 @@ public class HexBoard extends GameBoard {
      * position which fits on the board which can be checked with validPosition.
      */
     private void setPosition(HexPosition pos, Piece piece) {
-        board[pos.row()][pos.column()].setPiece(piece);
+        board[pos.getY()][pos.getX()].setPiece(piece);
     }
 
     /**
@@ -184,11 +184,11 @@ public class HexBoard extends GameBoard {
     }
 
     private boolean tileIsEmpty(HexPosition bp) {
-        return board[bp.row()][bp.column()].isBlank();
+        return board[bp.getY()][bp.getX()].isBlank();
     }
 
     private boolean withinBounds(HexPosition bp) {
-        return bp.column() >= 0 && bp.column() < getSize() &&
-               bp.row() >= 0 && bp.row() < getSize();
+        return bp.getX() >= 0 && bp.getX() < getSize() &&
+               bp.getY() >= 0 && bp.getY() < getSize();
     }
 }

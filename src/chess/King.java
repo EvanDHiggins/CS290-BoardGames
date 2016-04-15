@@ -13,6 +13,7 @@ public class King extends ChessPiece {
     public King(char repr, PieceColor color, Position position) {
         super(repr, color, position);
         addGenerator(new KingMoveGenerator());
+        addGenerator(new KingCastleGenerator());
     }
 
     @Override

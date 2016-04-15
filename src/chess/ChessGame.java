@@ -9,7 +9,6 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.lang.Character.codePointAt;
 import static java.lang.Character.toUpperCase;
 
 
@@ -198,6 +197,10 @@ public class ChessGame extends TwoPlayerGame {
                                 .findFirst().get();
     }
 
+    /**
+     * A legal move is any valid move which results in you not being in
+     * check.
+     */
     private boolean isLegalMove(Move move) {
         move.execute(board);
         boolean isLegal = !inCheck(currentPlayer);
@@ -299,7 +302,7 @@ public class ChessGame extends TwoPlayerGame {
     }
 
     /**
-     * Initializes a team at a given row for an 8x8 chess board.
+     * Initializes a team at a given getY for an 8x8 chess board.
      * @param row Row that the team is placed at.
      * @param color Color of the team
      * @param trans Transformation to apply to team representation. Allows one team to have capitalized pieces.

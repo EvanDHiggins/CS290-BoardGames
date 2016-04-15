@@ -8,33 +8,33 @@ package boardgame;
  */
 public class Position {
 
-    protected final int columnIdx;
-    protected final int rowIdx;
+    protected final int x;
+    protected final int y;
 
     public Position() {
         this(0, 0);
     }
 
     public Position(int rowIdx, int columnIdx) {
-        this.rowIdx = rowIdx;
-        this.columnIdx = columnIdx;
+        this.y = rowIdx;
+        this.x = columnIdx;
     }
 
-    public int column() {
-        return columnIdx;
+    public int getX() {
+        return x;
     }
 
-    public int row() {
-        return rowIdx;
+    public int getY() {
+        return y;
     }
 
     public Position plus(Position that) {
-        return new Position(this.row() + that.row(), this.column() + that.column());
+        return new Position(this.getY() + that.getY(), this.getX() + that.getX());
     }
 
     @Override
     public String toString() {
-        return String.format("(%1d, %2d)", row(), column());
+        return String.format("(%1d, %2d)", getY(), getX());
     }
 
     @Override
@@ -45,15 +45,15 @@ public class Position {
             return true;
 
         Position that = (Position)obj;
-        return this.row() == that.row() && this.column() == that.column();
+        return this.getY() == that.getY() && this.getX() == that.getX();
     }
 
     @Override
     public int hashCode() {
         int p1 = 37;
         int p2 = 47;
-        int n = row();
-        int q = column();
+        int n = getY();
+        int q = getX();
         if(n >= 0)
             n += 1;
         if(q >= 0)

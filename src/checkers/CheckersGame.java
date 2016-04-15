@@ -168,7 +168,7 @@ public class CheckersGame extends TwoPlayerGame {
      * whether or not the attempted promotion was successful.
      */
     public boolean maybeMakePieceKing(Position pos) {
-        if (pos.row() == 0 || pos.row() == board.getSize() - 1)
+        if (pos.getY() == 0 || pos.getY() == board.getSize() - 1)
             return board.getPieceAt(pos)
                     .filter(piece -> !(((Checker) piece).isKinged()))
                     .map(piece -> {

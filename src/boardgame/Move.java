@@ -1,6 +1,8 @@
 package boardgame;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by Evan on 3/2/2016.
@@ -19,9 +21,11 @@ public class Move {
     /**
      * These are the values needed to unexecute a move.
      */
-    private Optional<Piece> captured;
+    //private Optional<Piece> captured;
     private Optional<Piece> originalFrom;
     private Optional<Piece> originalTo;
+
+    private Set<Piece> capturedPieces = new HashSet<>();
 
     public Move(Position from, Position to) {
         this.from = from;
@@ -47,36 +51,42 @@ public class Move {
      * @param board the board which is being operated on.
      * @return The Captured piece, if any.
      */
-    public Optional<Piece> execute(GameBoard board) {
+    public Set<Piece> execute(GameBoard board) {
         executed = true;
-        captured = capture.map(board::getPieceAt).orElse(Optional.empty());
-        capture.map(pos -> {board.clearTile(pos); return null;});
+
+        capture.flatMap(board::getPieceAt)
+               .map(capturedPieces::add);
+
+        capture.ifPresent(board::clearTile);
+
         originalTo = board.getPieceAt(to);
         originalFrom = board.getPieceAt(from);
         board.clearTile(to);
-        board.getPieceAt(from).map(p -> {
+        board.getPieceAt(from).ifPresent(p -> {
             board.setPieceAt(to, p);
             p.moved();
             board.clearTile(from);
-            return null;
         });
-        return captured;
+        return capturedPieces;
     }
 
     public void unexecute(GameBoard board) {
         if(!executed)
             return;
-        originalFrom.map(piece -> {
+        originalFrom.ifPresent(piece -> {
             board.setPieceAt(from, piece);
             piece.unmove();
-            return null;
         });
         if(originalTo.isPresent()) {
             originalTo.ifPresent(piece -> board.setPieceAt(to, piece));
         } else {
             board.clearTile(to);
         }
-        capture.ifPresent(pos -> captured.ifPresent(piece -> board.setPieceAt(pos, piece)));
+
+        for(Piece captured : capturedPieces) {
+            board.setPieceAt(captured.getPosition(), captured);
+        }
+        capturedPieces = new HashSet<>();
         executed = false;
     }
 
@@ -143,5 +153,9 @@ public class Move {
 
     public boolean hasCapture() {
         return capture.isPresent();
+    }
+
+    public boolean withinBounds(GameBoard board) {
+        return board.withinBounds(from) && board.withinBounds(to) && capture.map(board::withinBounds).orElse(false);
     }
 }
