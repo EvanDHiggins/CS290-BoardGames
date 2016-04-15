@@ -28,6 +28,7 @@ import static java.lang.Character.toUpperCase;
 public class ChessGame extends TwoPlayerGame {
 
     private final String positionRegex = "[A-Ha-h][1-8]";
+    private final String UNDO_MOVE_STR = "UNDO";
 
     private static final char PAWN = 'p';
     private static final char ROOK = 'r';
@@ -40,7 +41,6 @@ public class ChessGame extends TwoPlayerGame {
 
     private ChessBoard board;
 
-    private final String UNDO_MOVE_STR = "UNDO";
 
     //Holds previous moves. Can be unexecuted.
     private Stack<Move> oldMoveStack = new Stack<>();
@@ -111,8 +111,6 @@ public class ChessGame extends TwoPlayerGame {
     /**
      * A stalemate arrises when a player is NOT in check, but has
      * no legal moves.
-     * @param player
-     * @return
      */
     private boolean isStalemate(Player player) {
         return !inCheck(player) && !hasLegalMoves(player);

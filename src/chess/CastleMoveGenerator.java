@@ -15,9 +15,6 @@ public class CastleMoveGenerator implements IMoveGenerator {
     /**
      * Designed to be attached to a King piece. Generates a DualMove object
      * which contains the execution semantics of the castling action.
-     * @param board
-     * @param piece
-     * @return
      */
     @Override
     public Set<Move> generate(GameBoard board, Piece piece) {
