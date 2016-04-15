@@ -14,8 +14,6 @@ public class CheckersGame extends TwoPlayerGame {
 
     private final String positionRegex = "[A-Ha-h][1-8]";
 
-    static final String EXIT_STRING = "exit";
-
     private CheckeredBoard board;
 
     public CheckersGame(Player player1, Player player2) {
@@ -135,7 +133,7 @@ public class CheckersGame extends TwoPlayerGame {
         do {
             System.out.println("Enter a move: " + player.getName());
             moveString = Application.input.nextLine();
-            if(EXIT_STRING.equalsIgnoreCase(moveString)) {
+            if(Application.EXIT_STRING.equalsIgnoreCase(moveString)) {
                 System.out.println("Thanks for playing!");
                 System.exit(0);
             }

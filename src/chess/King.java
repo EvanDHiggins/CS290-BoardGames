@@ -40,22 +40,21 @@ public class King extends ChessPiece {
                 for(int j = -1; j <= 1; j++) {
                     if(i == 0 && j == 0)
                         continue;
-                    Position pos = piece.getPosition().plus(new Position(i, j));
-                    if(board.pieceAt(pos)) {
-                        board.getPieceAt(pos).ifPresent(pce -> {
+                    Position to = piece.getPosition().plus(new Position(i, j));
+                    if(board.pieceAt(to)) {
+                        board.getPieceAt(to).ifPresent(pce -> {
                             if(!pce.matchesColor(piece)) {
-                                Position to = piece.getPosition().plus(pos);
                                 moves.add(new Move(piece.getPosition(), to, to));
                             }
                         });
                     } else {
-                        moves.add(new Move(piece.getPosition(), piece.getPosition().plus(pos)));
+                        moves.add(new Move(piece.getPosition(), to));
                     }
                 }
             }
 
             return moves.stream()
-                    .filter(mv -> board.withinBounds(mv.getTo()))
+                    .filter(mv -> mv.withinBounds(board))
                     .collect(Collectors.toSet());
         }
     }

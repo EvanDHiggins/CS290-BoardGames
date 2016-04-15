@@ -156,6 +156,6 @@ public class Move {
     }
 
     public boolean withinBounds(GameBoard board) {
-        return board.withinBounds(from) && board.withinBounds(to) && capture.map(board::withinBounds).orElse(false);
+        return board.withinBounds(from) && board.withinBounds(to) && capture.map(board::withinBounds).orElse(true);
     }
 }

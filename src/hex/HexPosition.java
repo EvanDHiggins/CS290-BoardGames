@@ -15,12 +15,12 @@ public class HexPosition extends Position {
     }
 
     public HexPosition(Position p) {
-        super(p.getY(), p.getX());
+        super(p.getX(), p.getY());
     }
 
     /**
      * hex adjacencies are the positions directly adjacent within a
-     * getY/getX to a given position, and the positions adjacent along
+     * row/column to a given position, and the positions adjacent along
      * one of the two diagonals. In this case the forward leaning
      * diagonal is considered an adjacency while the backward leaning
      * diagonal is not.

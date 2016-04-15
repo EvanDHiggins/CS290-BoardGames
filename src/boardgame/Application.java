@@ -12,6 +12,8 @@ import java.util.*;
  */
 public class Application {
 
+    public static final String EXIT_STRING = "exit";
+
     List<TwoPlayerGame> games = new ArrayList<>();
 
     public static Scanner input = new Scanner(System.in);
@@ -27,22 +29,32 @@ public class Application {
 
     public void run() {
         String userInput;
+        printMenu();
+
+        //userInput = input.nextLine();
+        while(!EXIT_STRING.equalsIgnoreCase(userInput = input.nextLine())) {
+            if(!validInput(userInput)) {
+                System.out.println("Invalid input, try again.");
+                continue;
+            }
+            int choice = Integer.parseInt(userInput);
+            games.get(choice - 1).run();
+            games = initGames();
+            printMenu();
+        }
+        System.out.println("Thanks for playing!");
+    }
+
+    private void printMenu() {
         System.out.println("What would you like to play?");
         for(int i = 0; i < games.size(); i++) {
             System.out.println((i+1) + ": " + games.get(i).getName());
         }
-        do {
-            userInput = input.nextLine();
-            if(!validInput(userInput))
-                System.out.println("Invalid input, try again.");
-        } while(!validInput(userInput));
-
-        int choice = Integer.parseInt(userInput);
-
-        games.get(choice - 1).run();
+        System.out.println("Type 'exit' to quit.");
     }
 
     private boolean validInput(String input) {
+
         if(!isNumberString(input))
             return false;
 

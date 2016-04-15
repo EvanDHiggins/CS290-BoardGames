@@ -15,9 +15,9 @@ public class Position {
         this(0, 0);
     }
 
-    public Position(int rowIdx, int columnIdx) {
-        this.y = rowIdx;
-        this.x = columnIdx;
+    public Position(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     public int getX() {
@@ -29,12 +29,12 @@ public class Position {
     }
 
     public Position plus(Position that) {
-        return new Position(this.getY() + that.getY(), this.getX() + that.getX());
+        return new Position(this.getX() + that.getX(), this.getY() + that.getY());
     }
 
     @Override
     public String toString() {
-        return String.format("(%1d, %2d)", getY(), getX());
+        return String.format("(%1d, %2d)", getX(), getY());
     }
 
     @Override

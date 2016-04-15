@@ -17,8 +17,8 @@ public class DownStandardMoveGenerator implements IMoveGenerator {
     public Set<Move> generate(GameBoard board, Piece piece) {
         Set<Position> maybeMoves = new HashSet<>();
 
-        Position move1 = new Position(piece.getPosition().getY()+1, piece.getPosition().getX()-1);
-        Position move2 = new Position(piece.getPosition().getY()+1, piece.getPosition().getX()+1);
+        Position move1 = new Position(piece.getPosition().getX()+1, piece.getPosition().getY()-1);
+        Position move2 = new Position(piece.getPosition().getX()+1, piece.getPosition().getY()+1);
 
         maybeMoves.add(move1);
         maybeMoves.add(move2);

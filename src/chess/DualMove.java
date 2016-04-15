@@ -39,7 +39,9 @@ public class DualMove extends Move {
     @Override
     public Set<Piece> execute(GameBoard board) {
         Set<Piece> capturedPieces = new HashSet<>();
+        System.out.println("Execute first");
         capturedPieces.addAll(firstMove.execute(board));
+        System.out.println("Execute second");
         capturedPieces.addAll(secondMove.execute(board));
         return capturedPieces;
     }

@@ -17,7 +17,7 @@ public class UpPawn extends Pawn {
     /**
      * Created by Evan on 4/11/2016.
      *
-     * Generates moves for pawns starting from the bottom of the board (getY 1) and moving
+     * Generates moves for pawns starting from the bottom of the board (row 1) and moving
      * towards the top of the board. En Passant captures are not included.
      */
     public static class UpPawnMoveGenerator implements IMoveGenerator {

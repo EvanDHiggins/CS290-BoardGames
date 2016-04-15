@@ -23,16 +23,16 @@ public abstract class GameBoard {
     }
 
     public boolean withinBounds(Position position) {
-        return position.getY() >= 0 && position.getY() < boardSize &&
-               position.getX() >= 0 && position.getX() < boardSize;
+        return position.getX() >= 0 && position.getX() < boardSize &&
+               position.getY() >= 0 && position.getY() < boardSize;
     }
 
     public Tile tileAt(Position position) {
-        return board[position.getY()][position.getX()];
+        return board[position.getX()][position.getY()];
     }
 
     public void setTile(Position position, Tile tile) {
-        board[position.getY()][position.getX()] = tile;
+        board[position.getX()][position.getY()] = tile;
     }
 
     public void setPieceAt(Position pos, Piece piece) {
@@ -44,13 +44,13 @@ public abstract class GameBoard {
     public boolean pieceAt(Position position) {
         if(!withinBounds(position))
             return false;
-        return !board[position.getY()][position.getX()].isBlank();
+        return !board[position.getX()][position.getY()].isBlank();
     }
 
     public Optional<Piece> getPieceAt(Position position) {
         if(!withinBounds(position))
             throw new ArrayIndexOutOfBoundsException("Position not on board.");
-        return board[position.getY()][position.getX()].getPiece();
+        return board[position.getX()][position.getY()].getPiece();
     }
 
     /**
