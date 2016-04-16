@@ -2,7 +2,6 @@ package chess;
 
 import boardgame.*;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -58,6 +57,8 @@ public class ChessGame extends TwoPlayerGame {
         do {
             board.printBoard();
 
+            System.out.println("It is " + currentPlayer.getName() + "'s turn.");
+
             if(inCheck(currentPlayer))
                 System.out.println("You are in check.");
 
@@ -109,34 +110,19 @@ public class ChessGame extends TwoPlayerGame {
         for(int column = 0; column < board.getSize(); column++) {
             Position pos1 = new Position(column, 0);
             Position pos2 = new Position(column, board.getSize() - 1);
-            if(isPawn(board, pos1)) {
-                board.getPieceAt(pos1).ifPresent(piece -> {
-                    promote(board, piece);
-                });
-            }
-            if(isPawn(board, pos2)) {
-                board.getPieceAt(pos2).ifPresent(piece -> {
-                    promote(board, piece);
-                });
-            }
+            board.getPieceAt(pos1).ifPresent(piece -> promote(board, piece));
+            board.getPieceAt(pos2).ifPresent(piece -> promote(board, piece));
         }
     }
 
     private void promote(GameBoard board, Piece piece) {
-        System.out.println("Choose your promotion:");
-        System.out.println("1: Bishop");
-        System.out.println("2: Knight");
-        System.out.println("3: Queen");
-        System.out.println("4: Rook");
+        if(!(piece instanceof Pawn))
+            return;
+        if(piece.toString().equals(Character.toString(PAWN)))
+            board.setPieceAt(piece.getPosition(), new Queen('q', piece.getColor(), piece.getPosition()));
+        else
+            board.setPieceAt(piece.getPosition(), new Queen('Q', piece.getColor(), piece.getPosition()));
     }
-
-    /**
-     * Returns true if piece at the position on board is a pawn. False otherwise.
-     */
-    private boolean isPawn(GameBoard board, Position pos) {
-        return board.getPieceAt(pos).map(p -> p instanceof Pawn).orElse(false);
-    }
-
 
     private void playerWins(Player player) {
         System.out.println("Checkmate. " + player.getName() + " has won!");

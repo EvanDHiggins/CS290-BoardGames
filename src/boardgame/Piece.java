@@ -48,6 +48,9 @@ public abstract class Piece {
         return this.color == c;
     }
 
+    public PieceColor getColor() {
+        return color;
+    }
     /**
      * Extends the piece's set of generators. Usable for
      * piece promotion among other things.
