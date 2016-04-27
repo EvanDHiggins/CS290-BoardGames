@@ -136,7 +136,14 @@ public class Move {
 
     @Override
     public String toString() {
-        return "From: " + from + ", To: " + to + capture.map(c -> " Capture: " + c.toString()).orElse("");
+        StringBuilder builder = new StringBuilder();
+        builder.append((char)(from.getX() + 'a'));
+        builder.append(from.getY());
+        builder.append('-');
+        builder.append((char)(to.getX() + 'a'));
+        builder.append(to.getY());
+        return builder.toString();
+        //return "From: " + from + ", To: " + to + capture.map(c -> " Capture: " + c.toString()).orElse("");
     }
 
     public Position getFrom() {

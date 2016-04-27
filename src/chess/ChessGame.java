@@ -2,6 +2,7 @@ package chess;
 
 import boardgame.*;
 
+import java.util.Observable;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -43,7 +44,8 @@ public class ChessGame extends TwoPlayerGame {
 
 
     //Holds previous moves. Can be unexecuted.
-    private Stack<Move> oldMoveStack = new Stack<>();
+    //private Stack<Move> oldMoveStack = new Stack<>();
+    protected ObservableStack<Move> oldMoveStack = new ObservableStack<>();
 
     public ChessGame(Player playerOne, Player playerTwo) {
         super("Chess", playerOne, playerTwo);
@@ -78,32 +80,60 @@ public class ChessGame extends TwoPlayerGame {
 
             Move parsedMove = parseMove(userInput);
 
-            Optional<Move> maybeMove = findMatchingMove(parsedMove);
-
-            if(!maybeMove.isPresent()) {
-                System.out.println("That is not a valid move.");
+            if(!attemptPlayerMove(parsedMove)) {
                 continue;
             }
-            Move playerMove = maybeMove.get();
-
-            if(!isLegalMove(playerMove)) {
-                System.out.println("That is not a legal move. It would leave you in check.");
-                continue;
-            }
-
-            playerMove.execute(board);
-            oldMoveStack.push(playerMove);
-
-            promotions(board);
-
-            if(isStalemate(otherPlayer))
-                stalemate();
-
+//
+//            Optional<Move> maybeMove = findMatchingMove(parsedMove);
+//
+//            if(!maybeMove.isPresent()) {
+//                System.out.println("That is not a valid move.");
+//                continue;
+//            }
+//            Move playerMove = maybeMove.get();
+//
+//            if(!isLegalMove(playerMove)) {
+//                System.out.println("That is not a legal move. It would leave you in check.");
+//                continue;
+//            }
+//
+//            playerMove.execute(board);
+//            oldMoveStack.push(playerMove);
+//
+//            promotions(board);
+//
+//            if(isStalemate(otherPlayer))
+//                stalemate();
 
             nextPlayer();
         } while(!hasLost(currentPlayer));
 
         playerWins(otherPlayer);
+    }
+
+    protected boolean attemptPlayerMove(Move move) {
+        Optional<Move> maybeMove = findMatchingMove(move);
+
+        if(!maybeMove.isPresent()) {
+            System.out.println("That is not a valid move.");
+            return false;
+        }
+        Move playerMove = maybeMove.get();
+
+        if(!isLegalMove(playerMove)) {
+            System.out.println("That is not a legal move. It would leave you in check.");
+            return false;
+        }
+
+        playerMove.execute(board);
+        oldMoveStack.push(playerMove);
+
+        promotions(board);
+
+        if(isStalemate(otherPlayer))
+            stalemate();
+
+        return true;
     }
 
     private void promotions(GameBoard board) {

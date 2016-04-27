@@ -1,8 +1,7 @@
 package boardgame;
 
 import java.awt.*;
-import java.util.Observable;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by evan on 2/12/16.
@@ -17,7 +16,7 @@ import java.util.Optional;
  * Pieces with NullPiece representing an empty space. But
  * hindsight is 20/20.
  */
-public class Tile extends Observable {
+public class Tile implements MyObservable {
 
     private char emptyTileChar = '.';
 
@@ -90,5 +89,21 @@ public class Tile extends Observable {
 
     public boolean isBlank(){
         return !piece.isPresent();
+    }
+
+    private Set<MyObserver> observers = new HashSet<>();
+
+    public void addObserver(MyObserver o) {
+        observers.add(o);
+    }
+
+    public void notifyObservers() {
+        for(MyObserver o : observers) {
+            o.update(this, null);
+        }
+    }
+
+    public void removeObserver(MyObserver o) {
+        observers.remove(o);
     }
 }

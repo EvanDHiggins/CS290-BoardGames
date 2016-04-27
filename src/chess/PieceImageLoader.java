@@ -49,7 +49,6 @@ public class PieceImageLoader {
         imagePath.append(pieceMap.get(piece.getRepresentation()));
 
         imagePath.append(".png");
-        System.out.println(imagePath);
 
         BufferedImage ret = null;
         try {
