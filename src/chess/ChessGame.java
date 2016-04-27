@@ -30,12 +30,12 @@ public class ChessGame extends TwoPlayerGame {
     private final String positionRegex = "[A-Ha-h][1-8]";
     private final String UNDO_MOVE_STR = "UNDO";
 
-    private static final char PAWN = 'p';
-    private static final char ROOK = 'r';
-    private static final char KNIGHT = 'n';
-    private static final char BISHOP = 'b';
-    private static final char KING = 'k';
-    private static final char QUEEN = 'q';
+    public static final String PAWN = "p";
+    public static final String ROOK = "r";
+    public static final String KNIGHT = "n";
+    public static final String BISHOP = "b";
+    public static final String KING = "k";
+    public static final String QUEEN = "q";
 
     private static final int CHESS_BOARD_SIZE = 8;
 
@@ -118,10 +118,10 @@ public class ChessGame extends TwoPlayerGame {
     private void promote(GameBoard board, Piece piece) {
         if(!(piece instanceof Pawn))
             return;
-        if(piece.toString().equals(Character.toString(PAWN)))
-            board.setPieceAt(piece.getPosition(), new Queen('q', piece.getColor(), piece.getPosition()));
+        if(piece.toString().equals(PAWN))
+            board.setPieceAt(piece.getPosition(), new Queen(QUEEN, piece.getColor(), piece.getPosition()));
         else
-            board.setPieceAt(piece.getPosition(), new Queen('Q', piece.getColor(), piece.getPosition()));
+            board.setPieceAt(piece.getPosition(), new Queen(QUEEN.toUpperCase(), piece.getColor(), piece.getPosition()));
     }
 
     private void playerWins(Player player) {
@@ -270,9 +270,9 @@ public class ChessGame extends TwoPlayerGame {
     private void initPlayerTwoTeam(Player player) {
         for(int column = 0; column < board.getSize(); column++) {
             Position pos = new Position(column, board.getSize() - 2);
-            board.setPieceAt(pos, new DownPawn(toUpperCase(PAWN), player.getPieceColor(), pos));
+            board.setPieceAt(pos, new DownPawn(PAWN.toUpperCase(), player.getPieceColor(), pos));
         }
-        initTeamAtRow(board.getSize() - 1, player.getPieceColor(), Character::toUpperCase);
+        initTeamAtRow(board.getSize() - 1, player.getPieceColor(), String::toUpperCase);
     }
 
     /**
@@ -281,7 +281,7 @@ public class ChessGame extends TwoPlayerGame {
      * @param color Color of the team
      * @param trans Transformation to apply to team representation. Allows one team to have capitalized pieces.
      */
-    private void initTeamAtRow(int row, Piece.PieceColor color, UnaryOperator<Character> trans) {
+    private void initTeamAtRow(int row, Piece.PieceColor color, UnaryOperator<String> trans) {
 
         board.setPieceAt(new Position(0, row), new Rook(trans.apply(ROOK), color, new Position(0, row)));
         board.setPieceAt(new Position(7, row), new Rook(trans.apply(ROOK), color, new Position(7, row)));

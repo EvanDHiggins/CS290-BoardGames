@@ -32,6 +32,10 @@ public abstract class Piece {
         this.color = color;
     }
 
+    public String getRepresentation() {
+        return stringRepr;
+    }
+
     public Position getPosition() {
         return position;
     }

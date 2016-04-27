@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by evan on 4/9/16.
  */
 public class UpPawn extends Pawn {
-    public UpPawn(char repr, PieceColor color, Position position) {
+    public UpPawn(String repr, PieceColor color, Position position) {
         super(repr, color, position);
         addGenerator(new UpPawnMoveGenerator());
     }

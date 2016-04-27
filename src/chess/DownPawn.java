@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class DownPawn extends Pawn {
 
-    public DownPawn(char repr, PieceColor color, Position position) {
+    public DownPawn(String repr, PieceColor color, Position position) {
         super(repr, color, position);
         addGenerator(new DownPawnMoveGenerator());
     }

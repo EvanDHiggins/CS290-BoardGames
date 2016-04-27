@@ -7,7 +7,7 @@ import boardgame.Position;
  */
 public abstract class Pawn extends ChessPiece {
 
-    public Pawn(char repr, PieceColor color, Position position) {
+    public Pawn(String repr, PieceColor color, Position position) {
         super(repr, color, position);
     }
 }

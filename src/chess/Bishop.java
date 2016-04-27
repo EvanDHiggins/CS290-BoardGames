@@ -9,7 +9,7 @@ import boardgame.Position;
  * a piece. If the piece is owned by another player it can be captured.
  */
 public class Bishop extends ChessPiece {
-    public Bishop(char repr, PieceColor color, Position position) {
+    public Bishop(String repr, PieceColor color, Position position) {
         super(repr, color, position);
         addGenerator(new DiagonalContinuousMoveGen());
     }

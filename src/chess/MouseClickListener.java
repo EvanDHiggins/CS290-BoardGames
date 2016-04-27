@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
  * The default implementation requires so many methods and clutters up important code.
  * This just implements everything but mouseClicked as a no-op.
  */
-public abstract class SimpleMouseListener implements MouseListener {
+public abstract class MouseClickListener implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {}

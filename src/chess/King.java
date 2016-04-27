@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * Created by evan on 4/8/16.
  */
 public class King extends ChessPiece {
-    public King(char repr, PieceColor color, Position position) {
+    public King(String repr, PieceColor color, Position position) {
         super(repr, color, position);
         addGenerator(new KingMoveGenerator());
         addGenerator(new CastleMoveGenerator());

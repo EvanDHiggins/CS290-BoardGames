@@ -8,9 +8,10 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 
 import static javax.swing.SwingUtilities.*;
 
@@ -74,6 +75,9 @@ public class GuiChessLauncher extends ChessGame {
 
     public class TilePanel extends JPanel implements Observer {
         private Tile observedTile;
+        private Optional<BufferedImage> pieceGraphic;
+        private boolean selected = false;
+        private JLabel pieceImageLabel;
 
         public TilePanel(Tile tile) {
             super();
@@ -82,16 +86,33 @@ public class GuiChessLauncher extends ChessGame {
             setBackground(tile.getColor());
             setOpaque(true);
             updatePieceGraphic();
+
+            pieceImageLabel = pieceGraphic.map(graphic -> new JLabel(new ImageIcon(graphic)))
+                                          .orElse(new JLabel());
+            add(pieceImageLabel);
+
+            addMouseListener(new MouseClickListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    System.out.println("MOUSE CLICK");
+                    pieceImageLabel.setVisible(true);
+                    //pieceImageLabel.setVisible(!pieceImageLabel.isVisible());
+                }
+            });
         }
 
         @Override
         public void update(Observable o, Object arg) {
             updatePieceGraphic();
-            System.out.println("Changed");
+            if(pieceGraphic.isPresent()) {
+
+            } else {
+
+            }
         }
 
         private void updatePieceGraphic() {
-
+            pieceGraphic = observedTile.getPiece().map(PieceImageLoader::getImage);
         }
     }
 

@@ -8,9 +8,9 @@ import boardgame.Position;
  */
 public abstract class ChessPiece extends Piece {
 
-    public ChessPiece(char repr, PieceColor color, Position position) {
+    public ChessPiece(String repr, PieceColor color, Position position) {
         super(color, position);
-        this.stringRepr = Character.toString(repr);
+        this.stringRepr = repr;
     }
 
     public boolean isKing() {
