@@ -39,7 +39,7 @@ public class ChessGame extends TwoPlayerGame {
 
     private static final int CHESS_BOARD_SIZE = 8;
 
-    private ChessBoard board;
+    protected ChessBoard board;
 
 
     //Holds previous moves. Can be unexecuted.

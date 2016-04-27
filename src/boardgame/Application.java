@@ -2,6 +2,7 @@ package boardgame;
 
 import checkers.CheckersGame;
 import chess.ChessGame;
+import chess.GuiChessLauncher;
 import hex.HexGame;
 
 import java.util.*;
@@ -84,6 +85,9 @@ public class Application {
 
         ret.add(new ChessGame(new Player("Lowercase", Piece.PieceColor.WHITE),
                               new Player("Uppercase", Piece.PieceColor.BLACK)));
+
+        ret.add(new GuiChessLauncher(new Player("Lowercase", Piece.PieceColor.WHITE),
+                                     new Player("Uppercase", Piece.PieceColor.BLACK)));
 
         return ret;
     }

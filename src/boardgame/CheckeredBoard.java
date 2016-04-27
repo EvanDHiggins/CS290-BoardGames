@@ -1,5 +1,7 @@
 package boardgame;
 
+import java.awt.*;
+
 /**
  * Created by Evan on 3/2/2016.
  *
@@ -66,8 +68,13 @@ public class CheckeredBoard extends GameBoard {
 
     private Tile genTile(int row, int column) {
         if((row + column) % 2 == 0) {
-            return new Tile(new Position(row, column), blackTile);
+            Tile tile = new Tile(new Position(row, column), blackTile);
+            tile.setColor(new Color(139,69,19));
+            return tile;
+            //return new Tile(new Position(row, column), blackTile);
         }
-        return new Tile(new Position(row, column), whiteTile);
+        Tile tile = new Tile(new Position(row, column), whiteTile);
+        tile.setColor(new Color(245,222,179));
+        return tile;
     }
 }

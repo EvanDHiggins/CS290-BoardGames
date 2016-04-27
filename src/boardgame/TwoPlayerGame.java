@@ -6,7 +6,7 @@ package boardgame;
  */
 public abstract class TwoPlayerGame {
 
-    String name;
+    private String name;
 
     protected Player currentPlayer;
 
@@ -26,6 +26,10 @@ public abstract class TwoPlayerGame {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String new_name) {
+        name = new_name;
     }
 
     public abstract void run();

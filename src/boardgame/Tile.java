@@ -1,5 +1,7 @@
 package boardgame;
 
+import java.awt.*;
+import java.util.Observable;
 import java.util.Optional;
 
 /**
@@ -15,17 +17,27 @@ import java.util.Optional;
  * Pieces with NullPiece representing an empty space. But
  * hindsight is 20/20.
  */
-public class Tile {
+public class Tile extends Observable {
 
     private char emptyTileChar = '.';
 
     private Optional<Piece> piece;
     private Position position;
 
+    private Color color = new Color(100, 100, 100);
+
     public Tile(Position position, char emptyTileChar) {
         piece = Optional.empty();
         this.position = position;
         this.emptyTileChar = emptyTileChar;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public void setPiece(Piece piece) {
@@ -34,6 +46,7 @@ public class Tile {
             p.setPosition(this.position);
             return null;
         });
+        notifyObservers();
     }
 
     public Optional<Piece> getPiece() {
@@ -55,6 +68,7 @@ public class Tile {
 
     public void clearPiece() {
         piece = Optional.empty();
+        notifyObservers();
     }
 
     @Override
