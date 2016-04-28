@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.util.*;
-import java.util.List;
 
 import static javax.swing.SwingUtilities.*;
 
@@ -18,8 +17,6 @@ import static javax.swing.SwingUtilities.*;
 public class GuiChessLauncher extends ChessGame {
 
     private TilePanel selectedTile = null;
-
-    private RecordsPanel recordsPanel;
 
     private JFrame frame;
 
@@ -36,7 +33,7 @@ public class GuiChessLauncher extends ChessGame {
     private void createAndExecuteGUI() {
         frame = new JFrame("Chess");
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
-        recordsPanel = new RecordsPanel();
+        RecordsPanel recordsPanel = new RecordsPanel();
         frame.add(new BoardPanel());
         //frame.add(new JScrollPane(recordsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
         frame.add(recordsPanel);
@@ -147,10 +144,7 @@ public class GuiChessLauncher extends ChessGame {
             addMouseListener(new MouseClickListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    repaint();
                     tileClicked((TilePanel)e.getComponent());
-                    if(!observedTile.getPiece().isPresent())
-                        return;
                 }
             });
         }
@@ -188,7 +182,6 @@ public class GuiChessLauncher extends ChessGame {
         JTextArea moveDisplay;
         public RecordsPanel() {
             setLayout(new BorderLayout());
-            //setPreferredSize(new Dimension(120, 640));
             add(new JLabel("Previous Moves"), BorderLayout.PAGE_START);
             moveDisplay = new JTextArea();
             moveDisplay.setEditable(false);

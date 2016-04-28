@@ -44,7 +44,6 @@ public class ChessGame extends TwoPlayerGame {
 
 
     //Holds previous moves. Can be unexecuted.
-    //private Stack<Move> oldMoveStack = new Stack<>();
     protected ObservableStack<Move> oldMoveStack = new ObservableStack<>();
 
     public ChessGame(Player playerOne, Player playerTwo) {
