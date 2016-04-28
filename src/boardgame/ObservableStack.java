@@ -6,24 +6,22 @@ import java.util.Stack;
 
 /**
  * Created by Evan on 4/27/2016.
+ *
  */
-public class ObservableStack<T> implements MyObservable {
-
-    private Stack<T> stack = new Stack<>();
+public class ObservableStack<T> extends Stack<T> implements MyObservable {
 
     private Set<MyObserver> observers = new HashSet<>();
 
-    public int size() {
-        return stack.size();
-    }
-
-    public void push(T element) {
-        stack.push(element);
+    @Override
+    public T push(T element) {
+        T returnValue = super.push(element);
         notifyObservers();
+        return returnValue;
     }
 
+    @Override
     public T pop() {
-        T item = stack.pop();
+        T item = super.pop();
         notifyObservers();
         return item;
     }
@@ -36,7 +34,7 @@ public class ObservableStack<T> implements MyObservable {
     @Override
     public void notifyObservers() {
         for(MyObserver o : observers) {
-            o.update(this, stack);
+            o.update(this);
         }
     }
 

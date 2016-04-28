@@ -21,7 +21,6 @@ public class Move {
     /**
      * These are the values needed to unexecute a move.
      */
-    //private Optional<Piece> captured;
     private Optional<Piece> originalFrom;
     private Optional<Piece> originalTo;
 

@@ -27,23 +27,25 @@ public class GuiChessLauncher extends ChessGame {
 
     @Override
     public void run() {
-        invokeLater(this::createAndExecuteGUI);
+        invokeLater(this::initializeGUI);
     }
 
-    private void createAndExecuteGUI() {
+    private void initializeGUI() {
         frame = new JFrame("Chess");
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
         RecordsPanel recordsPanel = new RecordsPanel();
         frame.add(new BoardPanel());
-        //frame.add(new JScrollPane(recordsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
         frame.add(recordsPanel);
         frame.setPreferredSize(new Dimension(760, 640));
         frame.setResizable(false);
-
         frame.pack();
         frame.setVisible(true);
     }
 
+    /**
+     * This is the main driver for the game logic. It forms a move based on player
+     * clicks by ignoring clicks which cannot yield a move until two have been entered.
+     */
     private void tileClicked(TilePanel panel) {
         if(panel == selectedTile) {
             selectedTile = null;
@@ -53,6 +55,8 @@ public class GuiChessLauncher extends ChessGame {
 
         if(selectedTile == null) {
             if(panel.getTile().isBlank())
+                return;
+            if(!panel.getTile().pieceMatchesColor(currentPlayer.getPieceColor()))
                 return;
             selectedTile = panel;
             panel.borderEnabled(true);
@@ -75,6 +79,9 @@ public class GuiChessLauncher extends ChessGame {
 
     }
 
+    /**
+     * JPanel subclass that represents a chessboard.
+     */
     public class BoardPanel extends JPanel {
         int rows = board.getSize();
         int columns = board.getSize();
@@ -101,7 +108,6 @@ public class GuiChessLauncher extends ChessGame {
             }
 
             for(int row = rows - 1; row >= 0; row--) {
-                //add(new NumberedJPanel(row+1));
                 JPanel rowLabel = new JPanel();
                 rowLabel.setLayout(new GridBagLayout());
                 rowLabel.add(new JLabel(Integer.toString(row + 1)));
@@ -128,6 +134,10 @@ public class GuiChessLauncher extends ChessGame {
         }
     }
 
+    /**
+     * There is a tile panel for each tile on the board. They serve as mainly a means
+     * of observing an individual tile to separate that from the board.
+     */
     public class TilePanel extends JPanel implements MyObserver {
         private Tile observedTile;
         private JLabel pieceImageLabel = null;
@@ -161,7 +171,7 @@ public class GuiChessLauncher extends ChessGame {
         }
 
         @Override
-        public void update(MyObservable o, Object arg) {
+        public void update(MyObservable o) {
             updatePieceGraphic();
         }
 
@@ -192,8 +202,8 @@ public class GuiChessLauncher extends ChessGame {
         }
 
         @Override
-        public void update(MyObservable o, Object arg) {
-            Stack<Move> stack = (Stack<Move>)arg;
+        public void update(MyObservable o) {
+            Stack<Move> stack = (ObservableStack<Move>)o;
             moveDisplay.setText("");
             for(Move m : stack) {
                 moveDisplay.append(m.toString() + "\n");

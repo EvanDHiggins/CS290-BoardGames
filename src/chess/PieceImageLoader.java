@@ -11,6 +11,8 @@ import java.util.Map;
 
 /**
  * Created by Evan on 4/27/2016.
+ *
+ * Loads piece images on request from file.
  */
 public class PieceImageLoader {
 

@@ -60,6 +60,9 @@ public class Tile implements MyObservable {
         return this.emptyTileChar == c;
     }
 
+    public boolean pieceMatchesColor(Piece.PieceColor color) {
+        return this.piece.map(p -> p.color == color).orElse(false);
+    }
 
     public boolean pieceMatchesColor(Piece piece) {
         return this.piece.map(p -> p.matchesColor(piece)).orElse(false);
@@ -99,7 +102,7 @@ public class Tile implements MyObservable {
 
     public void notifyObservers() {
         for(MyObserver o : observers) {
-            o.update(this, null);
+            o.update(this);
         }
     }
 
