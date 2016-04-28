@@ -26,7 +26,7 @@ public class UpPawn extends Pawn {
             Set<Move> moves = new HashSet<>();
 
             if(!board.pieceAt(piece.getPosition().plus(new Position(0, 1)))) {
-                if(!piece.hasMoved())
+                if(!piece.hasMoved() && !board.pieceAt(piece.getPosition().plus(new Position(0, 2))))
                     moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, 2))));
                 moves.add(new Move(piece.getPosition(), piece.getPosition().plus(new Position(0, 1))));
             }

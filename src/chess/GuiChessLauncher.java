@@ -3,11 +3,10 @@ package chess;
 import boardgame.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
+import java.awt.event.WindowEvent;
 import java.util.*;
 import java.util.List;
 
@@ -18,11 +17,11 @@ import static javax.swing.SwingUtilities.*;
  */
 public class GuiChessLauncher extends ChessGame {
 
-    private List<Position> playerClicks = new ArrayList<>();
-
     private TilePanel selectedTile = null;
 
     private RecordsPanel recordsPanel;
+
+    private JFrame frame;
 
     public GuiChessLauncher(Player playerOne, Player playerTwo) {
         super(playerOne, playerTwo);
@@ -35,12 +34,13 @@ public class GuiChessLauncher extends ChessGame {
     }
 
     private void createAndExecuteGUI() {
-        JFrame frame = new JFrame("Chess");
+        frame = new JFrame("Chess");
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
         recordsPanel = new RecordsPanel();
         frame.add(new BoardPanel());
+        //frame.add(new JScrollPane(recordsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
         frame.add(recordsPanel);
-        frame.setPreferredSize(new Dimension(740, 640));
+        frame.setPreferredSize(new Dimension(760, 640));
         frame.setResizable(false);
 
         frame.pack();
@@ -55,17 +55,27 @@ public class GuiChessLauncher extends ChessGame {
         }
 
         if(selectedTile == null) {
+            if(panel.getTile().isBlank())
+                return;
             selectedTile = panel;
             panel.borderEnabled(true);
             return;
         }
 
         Move playerMove = new Move(selectedTile.getTile().getPosition(), panel.getTile().getPosition());
-        if(attemptPlayerMove(playerMove))
+        Optional<String> errorMsg = attemptPlayerMove(playerMove);
+        if(errorMsg.isPresent())
+            JOptionPane.showMessageDialog(frame, errorMsg.get());
+        else
             nextPlayer();
 
         selectedTile.borderEnabled(false);
         selectedTile = null;
+        if(hasLost(currentPlayer)) {
+            JOptionPane.showMessageDialog(frame, "Congratulations " + otherPlayer.getName() + "! You win!");
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        }
+
     }
 
     public class BoardPanel extends JPanel {
@@ -83,28 +93,46 @@ public class GuiChessLauncher extends ChessGame {
 
         private void initLayout() {
             for(int i = 0; i < gridSize; i++) {
-                add(new JPanel());
+                if(i >= 1 && i <= gridSize - 2) {
+                    JPanel columnLabel = new JPanel();
+                    columnLabel.setLayout(new GridBagLayout());
+                    columnLabel.add(new JLabel(Character.toString((char)(i + 'a' - 1))));
+                    add(columnLabel);
+                } else {
+                    add(new JPanel());
+                }
             }
 
             for(int row = rows - 1; row >= 0; row--) {
-                add(new NumberedJPanel(row));
+                //add(new NumberedJPanel(row+1));
+                JPanel rowLabel = new JPanel();
+                rowLabel.setLayout(new GridBagLayout());
+                rowLabel.add(new JLabel(Integer.toString(row + 1)));
+                add(rowLabel);
                 for(int col = 0; col < columns; col++) {
                     add(new TilePanel(board.tileAt(new Position(col, row))));
                 }
-                add(new JPanel());
+                rowLabel = new JPanel();
+                rowLabel.setLayout(new GridBagLayout());
+                rowLabel.add(new JLabel(Integer.toString(row + 1)));
+                add(rowLabel);
             }
 
             for(int i = 0; i < gridSize; i++) {
-                add(new JPanel());
+                if(i >= 1 && i <= gridSize - 2) {
+                    JPanel columnLabel = new JPanel();
+                    columnLabel.setLayout(new GridBagLayout());
+                    columnLabel.add(new JLabel(Character.toString((char)(i + 'a' - 1))));
+                    add(columnLabel);
+                } else {
+                    add(new JPanel());
+                }
             }
         }
     }
 
     public class TilePanel extends JPanel implements MyObserver {
         private Tile observedTile;
-        //private Border highlightBorder = BorderFactory.createLineBorder(Color.RED);
-        private Border highlightBorder = BorderFactory.createLineBorder(Color.RED, 3);
-        private boolean selected = false;
         private JLabel pieceImageLabel = null;
 
         public TilePanel(Tile tile) {
@@ -160,11 +188,13 @@ public class GuiChessLauncher extends ChessGame {
         JTextArea moveDisplay;
         public RecordsPanel() {
             setLayout(new BorderLayout());
-            setPreferredSize(new Dimension(100, 640));
+            //setPreferredSize(new Dimension(120, 640));
             add(new JLabel("Previous Moves"), BorderLayout.PAGE_START);
             moveDisplay = new JTextArea();
             moveDisplay.setEditable(false);
-            add(moveDisplay, BorderLayout.CENTER);
+            add(new JScrollPane(moveDisplay,
+                                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
             oldMoveStack.addObserver(this);
         }
 
@@ -173,16 +203,8 @@ public class GuiChessLauncher extends ChessGame {
             Stack<Move> stack = (Stack<Move>)arg;
             moveDisplay.setText("");
             for(Move m : stack) {
-                moveDisplay.append(m.toString());
+                moveDisplay.append(m.toString() + "\n");
             }
-        }
-    }
-
-    public class NumberedJPanel extends JPanel {
-        public NumberedJPanel(int number) {
-            super();
-            setLayout(new BorderLayout());
-            add(new JLabel(Integer.toString(number)), BorderLayout.CENTER);
         }
     }
 }

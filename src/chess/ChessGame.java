@@ -80,30 +80,11 @@ public class ChessGame extends TwoPlayerGame {
 
             Move parsedMove = parseMove(userInput);
 
-            if(!attemptPlayerMove(parsedMove)) {
+            Optional<String> errorMsg = attemptPlayerMove(parsedMove);
+            if(errorMsg.isPresent()) {
+                System.out.println(errorMsg.get());
                 continue;
             }
-//
-//            Optional<Move> maybeMove = findMatchingMove(parsedMove);
-//
-//            if(!maybeMove.isPresent()) {
-//                System.out.println("That is not a valid move.");
-//                continue;
-//            }
-//            Move playerMove = maybeMove.get();
-//
-//            if(!isLegalMove(playerMove)) {
-//                System.out.println("That is not a legal move. It would leave you in check.");
-//                continue;
-//            }
-//
-//            playerMove.execute(board);
-//            oldMoveStack.push(playerMove);
-//
-//            promotions(board);
-//
-//            if(isStalemate(otherPlayer))
-//                stalemate();
 
             nextPlayer();
         } while(!hasLost(currentPlayer));
@@ -111,18 +92,20 @@ public class ChessGame extends TwoPlayerGame {
         playerWins(otherPlayer);
     }
 
-    protected boolean attemptPlayerMove(Move move) {
+    /**
+     * Attempts to execute the move argument. Returns the error message if
+     * there is one. Otherwise it returns Optional.Empty
+     */
+    protected Optional<String> attemptPlayerMove(Move move) {
         Optional<Move> maybeMove = findMatchingMove(move);
 
         if(!maybeMove.isPresent()) {
-            System.out.println("That is not a valid move.");
-            return false;
+            return Optional.of("That is not a valid move.");
         }
         Move playerMove = maybeMove.get();
 
         if(!isLegalMove(playerMove)) {
-            System.out.println("That is not a legal move. It would leave you in check.");
-            return false;
+            return Optional.of("That is not a legal move. It would leave you in check.");
         }
 
         playerMove.execute(board);
@@ -133,7 +116,7 @@ public class ChessGame extends TwoPlayerGame {
         if(isStalemate(otherPlayer))
             stalemate();
 
-        return true;
+        return Optional.empty();
     }
 
     private void promotions(GameBoard board) {
@@ -247,7 +230,7 @@ public class ChessGame extends TwoPlayerGame {
      * A player has lost the game when their king is in check and any available
      * move still results in their king being in check.
      */
-    private boolean hasLost(Player player) {
+    protected boolean hasLost(Player player) {
         return inCheck(findPlayersKing(player)) && !hasLegalMoves(player);
     }
 

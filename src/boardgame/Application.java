@@ -86,8 +86,8 @@ public class Application {
         ret.add(new ChessGame(new Player("Lowercase", Piece.PieceColor.WHITE),
                               new Player("Uppercase", Piece.PieceColor.BLACK)));
 
-        ret.add(new GuiChessLauncher(new Player("Lowercase", Piece.PieceColor.WHITE),
-                                     new Player("Uppercase", Piece.PieceColor.BLACK)));
+        ret.add(new GuiChessLauncher(new Player("White Player", Piece.PieceColor.WHITE),
+                                     new Player("Black Player", Piece.PieceColor.BLACK)));
 
         return ret;
     }

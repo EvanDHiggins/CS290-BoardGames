@@ -138,12 +138,11 @@ public class Move {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append((char)(from.getX() + 'a'));
-        builder.append(from.getY());
+        builder.append(from.getY()+1);
         builder.append('-');
         builder.append((char)(to.getX() + 'a'));
-        builder.append(to.getY());
+        builder.append(to.getY()+1);
         return builder.toString();
-        //return "From: " + from + ", To: " + to + capture.map(c -> " Capture: " + c.toString()).orElse("");
     }
 
     public Position getFrom() {
